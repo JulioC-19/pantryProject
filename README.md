@@ -51,9 +51,9 @@ npm run android
 ## Troubleshooting
 ### Enviroment Issues
 #### Android Rebuild
-- Uninstall application from emulator/device
+- Uninstall application from emulator
 - Close out emulator windows 
-- Delete everything in android\app\build
+- Delete android build folder: android\build
 - ` rmdir node_modules `
 - ` npm cache clean --force `
 - ` npm install `
