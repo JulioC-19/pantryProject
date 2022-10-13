@@ -9,6 +9,7 @@ No demo yet
 - [Wireframe](#wireframe)
 - [Technologies](#technologies)
 - [Setup](#setup)
+- [Troubleshooting](#troubleshooting)
 - [Status](#status)
 - [Credits](#credits)
 - [License](#license)
@@ -46,6 +47,18 @@ npm run android
 
 > Alternative, you can also run on iOS, just replace android with ios in step 3.
 > Currently, the project is being developed only on Android.
+
+## Troubleshooting
+### Enviroment Issues
+#### Android Rebuild
+- Uninstall application from emulator/device
+- Close out emulator windows 
+- Delete everything in android\app\build
+- ` rmdir node_modules `
+- ` npm cache clean --force `
+- ` npm install `
+- ` npm run start `
+- ` npm run android `
 
 
 ## Status
