@@ -20,15 +20,15 @@ Mobile implementation of the large project for COP 4331
 In progress
 
 ## Technologies
-[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.png?v=101)](https://github.com/ellerbrock/typescript-badges/) 
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![React Native](https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Realm](https://img.shields.io/badge/Realm-39477F?style=for-the-badge&logo=realm&logoColor=white)
 
 ## Setup💻
 
-1. Install node modules
+1. Inside the project folder, install node_modules
 
 ```
-// npm
-
 npm install 
 ```
 2. Start metro, the JavaScript bundler that ships with React Native. Metro "takes in an entry file and various options, and returns a single JavaScript file that includes all your code and its dependencies."— Metro Docs
@@ -52,7 +52,7 @@ npm run android
 in progress. 
 
 ## Credits
-List of contriubutors:
+### Contriubutors:
 - 
 - 
 
