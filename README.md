@@ -20,9 +20,9 @@ Mobile implementation of the large project for COP 4331
 In progress
 
 ## Technologies
-[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.png?v=101)](https://github.com/ellerbrock/typescript-badges/) https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.png?v=101)](https://github.com/ellerbrock/typescript-badges/) 
 
-## 💻 Setup
+## Setup💻
 
 1. Install node modules
 
