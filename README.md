@@ -32,11 +32,11 @@ In progress
 npm install 
 ```
 2. Start metro, the JavaScript bundler that ships with React Native. Metro "takes in an entry file and various options, and returns a single JavaScript file that includes all your code and its dependencies."— Metro Docs
-Let Metro Bundler run in its own terminal
 
 ```
 npm run start
 ```
+> Let Metro Bundler run in its own terminal
 
 3. Open a new terminal inside the project folder and run android
 
