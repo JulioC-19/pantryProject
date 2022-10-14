@@ -1,0 +1,7 @@
+android
+ios
+
+# Ignore formating files
+.eslintrc.js
+.prettierrc.js
+**/*.json
