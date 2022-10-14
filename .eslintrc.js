@@ -10,7 +10,9 @@ module.exports = {
         '@typescript-eslint/no-shadow': ['error'],
         'no-shadow': 'off',
         'no-undef': 'off',
+        "no-unused-vars": "off",
         'prettier/prettier': ['error', {endOfLine: 'auto'}],
+        "@typescript-eslint/no-unused-vars": "warn"
       },
     },
   ],
