@@ -4,4 +4,6 @@ ios
 # Ignore formating files
 .eslintrc.js
 .prettierrc.js
+icons.js
+**/*.js
 **/*.json
