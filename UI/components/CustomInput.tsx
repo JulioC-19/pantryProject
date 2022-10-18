@@ -58,6 +58,7 @@ const inputStyle = StyleSheet.create({
     paddingHorizontal: 15,
     borderWidth: 1,
     alignItems: 'center',
+    borderRadius: 14,
   },
   iconStyle: {
     color: 'gray',
