@@ -1,5 +1,6 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {Alert, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {Button} from '@react-native-material/core';
 
 const App = () => {
   return (
@@ -8,6 +9,7 @@ const App = () => {
         <Text style={styles.sectionTitle}>
           Hello World!, this is the large project mobile!
         </Text>
+        <Button title="Click Me" onPress={() => Alert.alert('🎉🎉🎉')} />
       </View>
     </SafeAreaView>
   );
