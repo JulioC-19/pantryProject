@@ -3,17 +3,9 @@ import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {CustomInput} from './components/CustomInput';
 import {CustomButton} from './components/CustomButton';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {NavigationProps} from './navigation/screenTypes';
 
-type StackParamList = {
-  Home: {};
-}
-
-type NavigationProps = StackNavigationProp<StackParamList>
-
-export const Signup = () => {
-  const navigation = useNavigation<NavigationProps>()
+export const Signup = ({navigation}: NavigationProps) => {
   return (
     <SafeAreaView>
       <CustomInput
@@ -39,34 +31,30 @@ export const Signup = () => {
       />
 
       <View style={localStyle.textContainer}>
-        <Text style={localStyle.textStyle}>
-          Already have an account? 
-        </Text>
-        <TouchableOpacity style={{paddingLeft: 5}} onPress={()=> navigation.navigate('Home', {})}>
-          <Text style={localStyle.loginText}>
-            Log in
-          </Text> 
-        </TouchableOpacity> 
+        <Text style={localStyle.textStyle}>Already have an account?</Text>
+        <TouchableOpacity
+          style={{paddingLeft: 5}}
+          onPress={() => navigation.navigate('Home', {})}>
+          <Text style={localStyle.loginText}>Log in</Text>
+        </TouchableOpacity>
       </View>
-      
     </SafeAreaView>
   );
 };
 
 const localStyle = StyleSheet.create({
-  textStyle :{
+  textStyle: {
     color: 'black',
-    fontStyle:'normal',
+    fontStyle: 'normal',
   },
-  textContainer:{
+  textContainer: {
     flexDirection: 'row',
     height: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    
   },
-  loginText:{
+  loginText: {
     color: 'black',
-    fontWeight:'bold',
-  }
-})
+    fontWeight: 'bold',
+  },
+});

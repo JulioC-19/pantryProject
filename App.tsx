@@ -1,30 +1,39 @@
-// In App.js in a new project
+import React from 'react';
+import {View, Text} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {Button} from '@react-native-material/core';
+import {Signup} from './UI/Signup';
+import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 
-import * as React from 'react';
-import { View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Signup } from './UI/Signup';
-
-function HomeScreen() {
+const HomeScreen = ({navigation}: NavigationProps) => {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Home Screen</Text>
+      <Button
+        title="Navigate back"
+        onPress={() => navigation.navigate('Signup', {})}
+      />
     </View>
   );
-}
+};
 
-const Stack = createNativeStackNavigator();
+/**
+ * This navigator stack contains the app's screens.
+ * If a new screen is needed, it must be added to StackParamList types.ts, so
+ * that the navigator can recognize it.
+ */
+const Stack = createStackNavigator<StackParamList>();
 
 function App() {
   return (
     <NavigationContainer>
-        <Stack.Navigator  
-          screenOptions={{
-          headerShown: false
-          }}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
         <Stack.Screen name="Signup" component={Signup} />
-        <Stack.Screen name="Home" component={HomeScreen}/>
+        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
