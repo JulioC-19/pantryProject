@@ -1,10 +1,19 @@
 import React from 'react';
-import {Alert} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {CustomInput} from './components/CustomInput';
 import {CustomButton} from './components/CustomButton';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type StackParamList = {
+  Home: {};
+}
+
+type NavigationProps = StackNavigationProp<StackParamList>
 
 export const Signup = () => {
+  const navigation = useNavigation<NavigationProps>()
   return (
     <SafeAreaView>
       <CustomInput
@@ -28,6 +37,36 @@ export const Signup = () => {
         title={'Sign up'}
         onPress={() => Alert.prompt('Implement Signup logic!')}
       />
+
+      <View style={localStyle.textContainer}>
+        <Text style={localStyle.textStyle}>
+          Already have an account? 
+        </Text>
+        <TouchableOpacity style={{paddingLeft: 5}} onPress={()=> navigation.navigate('Home', {})}>
+          <Text style={localStyle.loginText}>
+            Log in
+          </Text> 
+        </TouchableOpacity> 
+      </View>
+      
     </SafeAreaView>
   );
 };
+
+const localStyle = StyleSheet.create({
+  textStyle :{
+    color: 'black',
+    fontStyle:'normal',
+  },
+  textContainer:{
+    flexDirection: 'row',
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    
+  },
+  loginText:{
+    color: 'black',
+    fontWeight:'bold',
+  }
+})
