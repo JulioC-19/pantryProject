@@ -3,7 +3,6 @@ import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NavigationProps} from './navigation/screenTypes';
 import {TextInput2} from './components/TextInput2';
-import {Button} from '@react-native-material/core';
 import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
 
