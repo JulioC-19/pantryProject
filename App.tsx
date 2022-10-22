@@ -11,7 +11,7 @@ const HomeScreen = ({navigation}: NavigationProps) => {
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Home Screen</Text>
       <Button
-        title="Navigate back"
+        title="Navigate to signup"
         onPress={() => navigation.navigate('Signup', {})}
       />
     </View>
@@ -32,8 +32,8 @@ function App() {
         screenOptions={{
           headerShown: false,
         }}>
-        <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Signup" component={Signup} />
       </Stack.Navigator>
     </NavigationContainer>
   );
