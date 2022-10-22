@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   StyleSheet,
@@ -15,23 +15,59 @@ import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
 
 export const Signup = ({navigation}: NavigationProps) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  /**
+   * Handles the sing up logic.
+   * For now, it just display an alert with the user's first and last name.
+   * Resets the fields after the sign up logic is executed.
+   */
+  function onSignUp() {
+    Alert.alert(firstName + ' ' + lastName);
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+  }
+
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={localStyle.container}>
       <View style={localStyle.formContainer}>
         <View style={localStyle.logoContainer}>
           <Image source={require('./assets/men1.png')} />
         </View>
-        <TextInput2 placeholder="first name" />
-        <TextInput2 placeholder="last name" />
-        <TextInput2 placeholder="email" />
-        <TextInput2 placeholder="password" isPasswordField={true} />
-        <TextInput2 placeholder="confirm password" isPasswordField={true} />
-        <Button2
-          title="sign up"
-          onPress={() => Alert.alert('Implement Sign up!')}
+        <TextInput2
+          placeholder="first name"
+          onChangeText={setFirstName}
+          value={firstName}
         />
+        <TextInput2
+          placeholder="last name"
+          onChangeText={setLastName}
+          value={lastName}
+        />
+        <TextInput2 placeholder="email" onChangeText={setEmail} value={email} />
+        <TextInput2
+          placeholder="password"
+          isPasswordField={true}
+          onChangeText={setPassword}
+          value={password}
+        />
+        <TextInput2
+          placeholder="confirm password"
+          isPasswordField={true}
+          onChangeText={setConfirmPassword}
+          value={confirmPassword}
+        />
+        <Button2 title="sign up" onPress={onSignUp} />
+
         <View style={localStyle.textContainer}>
           <Text style={localStyle.textStyle}>Already Registered?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Home', {})}>

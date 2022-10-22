@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View, TextInputProps} from 'react-native';
 import Icon from '../styles/icons';
 import {colors} from '../styles/colors';
 
@@ -7,12 +7,11 @@ import {colors} from '../styles/colors';
  * Properties for the custom input
  * fields with ? indicate optional field as in the user is not required to use it but can add it on
  */
-type Props = {
+interface Props extends TextInputProps {
   label?: string;
-  placeholder: string;
   iconName?: string;
   isPasswordField?: boolean;
-};
+}
 
 export const TextInput2 = (props: Props) => {
   const [hidePassword, setHidePassword] = useState(props.isPasswordField);
