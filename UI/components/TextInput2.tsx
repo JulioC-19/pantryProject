@@ -1,4 +1,3 @@
-import {Text} from '@rneui/base';
 import React, {useState} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import Icon from '../styles/icons';
@@ -70,8 +69,6 @@ const inputStyle = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'normal',
     flex: 1,
-    display: 'flex',
-    textAlign: 'center',
     color: 'blackem',
   },
 });
