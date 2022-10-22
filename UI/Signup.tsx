@@ -1,60 +1,57 @@
 import React from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {CustomInput} from './components/CustomInput';
-import {CustomButton} from './components/CustomButton';
 import {NavigationProps} from './navigation/screenTypes';
+import {TextInput2} from './components/TextInput2';
+import {Button} from '@react-native-material/core';
+import {colors} from './styles/colors';
+import {Button2} from './components/Button2';
 
 export const Signup = ({navigation}: NavigationProps) => {
   return (
     <SafeAreaView>
-      <CustomInput
-        iconName="adduser"
-        label="Username"
-        placeholder="Enter a user name"
-      />
-      <CustomInput
-        iconName="mail"
-        label={'Email'}
-        placeholder="Enter a valid email address"
-      />
-      <CustomInput
-        iconName="lock"
-        label={'Password'}
-        placeholder="Enter password"
-        isPasswordField={true}
-      />
+      <View style={localStyle.formView}>
+        <TextInput2 placeholder="Enter a user name" />
+        <TextInput2 placeholder="Enter a user name" />
+        <TextInput2 placeholder="email" />
+        <TextInput2 placeholder="password" isPasswordField={true} />
+        <TextInput2 placeholder="confirm password" isPasswordField={true} />
 
-      <CustomButton
-        title={'Sign up'}
-        onPress={() => Alert.prompt('Implement Signup logic!')}
-      />
+        <Button2
+          title="sign up"
+          onPress={() => Alert.alert('Implement Sign up!')}
+        />
 
-      <View style={localStyle.textContainer}>
-        <Text style={localStyle.textStyle}>Already have an account?</Text>
-        <TouchableOpacity
-          style={{paddingLeft: 5}}
-          onPress={() => navigation.navigate('Home', {})}>
-          <Text style={localStyle.loginText}>Log in</Text>
-        </TouchableOpacity>
+        <View style={localStyle.textContainer}>
+          <Text style={localStyle.textStyle}>Already Registered?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Home', {})}>
+            <Text style={localStyle.loginText}>Log in</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
 const localStyle = StyleSheet.create({
+  formView: {
+    flexDirection: 'column',
+    top: 230,
+  },
   textStyle: {
-    color: 'black',
+    color: colors.darkOliveGreen,
     fontStyle: 'normal',
   },
   textContainer: {
+    marginVertical: 20,
     flexDirection: 'row',
     height: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   loginText: {
-    color: 'black',
+    color: colors.gleeful,
     fontWeight: 'bold',
+    paddingLeft: 5,
   },
 });
