@@ -2,7 +2,7 @@ export const colors = {
     // Regular colors
     darkGray:'#9C9C9C',
     gainsBoro:'#D9D9D9',
-    white:'white',
+    white:'#FFFFFF',
     
     // Main color palet
     fullYellow: '#FABC4F',
