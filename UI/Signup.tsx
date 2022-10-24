@@ -70,7 +70,7 @@ export const Signup = ({navigation}: NavigationProps) => {
 
         <View style={localStyle.textContainer}>
           <Text style={localStyle.textStyle}>Already Registered?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Home', {})}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login', {})}>
             <Text style={localStyle.loginText}>Log in</Text>
           </TouchableOpacity>
         </View>

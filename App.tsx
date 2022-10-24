@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Button} from '@react-native-material/core';
 import {Signup} from './UI/Signup';
+import {Login} from './UI/Login';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 
 const HomeScreen = ({navigation}: NavigationProps) => {
@@ -34,6 +35,7 @@ function App() {
         }}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="Login" component={Login} />
       </Stack.Navigator>
     </NavigationContainer>
   );
