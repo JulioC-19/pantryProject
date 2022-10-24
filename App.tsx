@@ -1,37 +1,42 @@
 import React from 'react';
-import {Alert, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {View, Text} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import {Button} from '@react-native-material/core';
+import {Signup} from './UI/Signup';
+import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 
-const App = () => {
+const HomeScreen = ({navigation}: NavigationProps) => {
   return (
-    <SafeAreaView>
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>
-          Hello World!, this is the large project mobile!
-        </Text>
-        <Button title="Click Me" onPress={() => Alert.alert('🎉🎉🎉')} />
-      </View>
-    </SafeAreaView>
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <Text>Home Screen</Text>
+      <Button
+        title="Navigate to signup"
+        onPress={() => navigation.navigate('Signup', {})}
+      />
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+/**
+ * This navigator stack contains the app's screens.
+ * If a new screen is needed, it must be added to StackParamList types.ts, so
+ * that the navigator can recognize it.
+ */
+const Stack = createStackNavigator<StackParamList>();
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Signup" component={Signup} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default App;
