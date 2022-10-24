@@ -8,7 +8,7 @@ import Icon from '../styles/icons';
  * fields with ? indicate optional field as in the user is not required to use it but can add it on
  */
 type Props = {
-  label: string;
+  //label: string;
   placeholder: string;
   iconName: string;
   isPasswordField?: boolean;
@@ -19,7 +19,7 @@ export const CustomInput = (props: Props) => {
 
   return (
     <View style={inputStyle.parentView}>
-      <Text style={inputStyle.label}>{props.label}</Text>
+      {/* <Text style={inputStyle.label}>{props.label}</Text> */}
       <View style={[inputStyle.inputContainer]}>
         <Icon.AntDesign name={props.iconName} style={inputStyle.iconStyle} />
         <TextInput
@@ -47,17 +47,18 @@ const inputStyle = StyleSheet.create({
     color: 'gray',
   },
   parentView: {
-    marginTop: 15,
-    marginLeft: 15,
-    marginRight: 15,
+    width: '85%',
+    alignSelf: 'center',
+    marginBottom: 20,
   },
   inputContainer: {
     height: 50,
-    backgroundColor: 'light',
+    backgroundColor: '#d9d9d9',
     flexDirection: 'row',
     paddingHorizontal: 15,
-    borderWidth: 1,
+    //borderWidth: 1,
     alignItems: 'center',
+    borderRadius: 17,
   },
   iconStyle: {
     color: 'gray',
