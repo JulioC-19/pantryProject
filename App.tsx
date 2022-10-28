@@ -3,6 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
+import {Login} from './UI/Login';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {Login} from './UI/Login';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';

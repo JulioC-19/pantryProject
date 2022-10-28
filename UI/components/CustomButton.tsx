@@ -19,16 +19,19 @@ export const CustomButton = ({title, onPress}: Props) => {
 
 const buttonStyles = StyleSheet.create({
   buttonContainer: {
-    width: '100%',
-    padding: 15,
+    width: '85%',
+    //marginTop: 15,
+    //marginBottom: 5,
+    alignSelf: 'center',
   },
   button: {
     flexDirection: 'row',
     height: 50,
-    backgroundColor: 'rgb(34, 145, 132)',
+    backgroundColor: '#a5ba78',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 20,
+    marginBottom: 20,
+    borderRadius: 17,
   },
   buttonText: {
     color: 'white',
