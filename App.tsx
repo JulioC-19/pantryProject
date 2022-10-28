@@ -5,7 +5,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
 import {Login} from './UI/Login';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
-import {Login} from './UI/Login';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
 import Icon from './UI/styles/icons';
@@ -58,7 +57,7 @@ const HomeBarIcon = () => {
 
 function App() {
   // Temporary set to true to access the user portal
-  const [isSignedIn, setIsSignedIn] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   return (
     <NavigationContainer>
       {isSignedIn ? (
