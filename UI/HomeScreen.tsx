@@ -66,9 +66,10 @@ export const HomeScreen = () => {
           <View style={{paddingBottom: 250}}>
             <ListHeader title={'TRENDING'} color={colors.mountainIris} />
             <FlatList
-              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
               data={latestMeals.slice(0, 10)}
-              horizontal={true}
+              numColumns={2}
+              horizontal={false}
               keyExtractor={(item, index) => {
                 return item.idMeal;
               }}
