@@ -50,7 +50,7 @@ const HomeBarIcon = () => {
 
 function App() {
   // Temporary set to true to access the user portal
-  const [isSignedIn, setIsSignedIn] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   return (
     <NavigationContainer>
       {isSignedIn ? (

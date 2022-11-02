@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   StyleSheet,
@@ -15,9 +15,28 @@ import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
 
 export const Login = ({navigation}: NavigationProps) => {
-  function onLogin() {
-    Alert.alert('Login successful!');
+  const [emailInput, setEmail] = useState('');
+  const [passwordInput, setPassword] = useState('');
+
+  const URL = 'https://newpantry.herokuapp.com/api/login';
+  const body = JSON.stringify({email: 'johnsmith@woah.com', password: 'ucf'});
+
+  async function onLogin() {
+    try {
+      const response = await fetch(URL, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const jsonResponse = await response.json();
+      console.log(jsonResponse);
+    } catch (error) {
+      console.log(error);
+    }
   }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
