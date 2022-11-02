@@ -16,7 +16,7 @@ export const Search = ({navigation}: NavigationProps) => {
   const [Keyword, setKeyword] = useState('');
 
   function recipePage() {
-    navigation.navigate('Login', {});
+    Alert.alert('Recipe');
   }
 
   return (
@@ -32,6 +32,7 @@ export const Search = ({navigation}: NavigationProps) => {
               value={Keyword}
               onChangeText={keyword => setKeyword(keyword)}
               onEndEditing={() => {
+                //navigation.navigate('SearchResult', {});
                 Alert.alert('Searching for "' + Keyword + '"');
               }}
             />

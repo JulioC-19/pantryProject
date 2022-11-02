@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
 import {Login} from './UI/Login';
-import {SearchScreen} from './UI/Search';
+import {Search} from './UI/Search';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
@@ -58,14 +58,14 @@ const HomeBarIcon = () => {
 
 function App() {
   // Temporary set to true to access the user portal
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true);
   return (
     <NavigationContainer>
       {isSignedIn ? (
         <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
           <Tab.Screen
             name="Search"
-            component={SearchScreen}
+            component={Search}
             options={{tabBarIcon: SearchBarIcon}}
           />
           <Tab.Screen
