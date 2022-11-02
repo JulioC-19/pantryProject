@@ -53,7 +53,7 @@ npm run android
 #### Android Rebuild
 - Uninstall application from emulator
 - Close out emulator windows 
-- Delete android build folder: android\build
+- Delete android build folder under app folder: android\app\build
 - ` rmdir node_modules `
 - ` npm cache clean --force `
 - ` npm install `
