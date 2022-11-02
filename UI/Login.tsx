@@ -28,7 +28,6 @@ export const Login = ({navigation}: NavigationProps) => {
           style={localStyles.logo}
         />
         <TextInput2 placeholder="email" />
-
         <TextInput2 placeholder="password" isPasswordField={true} />
 
         <Button2 title={'login'} onPress={onLogin} />
