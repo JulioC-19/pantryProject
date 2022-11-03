@@ -15,9 +15,7 @@ import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
 
 export const Login = ({navigation}: NavigationProps) => {
-  function onLogin() {
-    navigation.navigate('Search', {});
-  }
+  function onLogin() {}
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
