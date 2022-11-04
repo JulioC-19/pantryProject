@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   Alert,
   StyleSheet,
@@ -13,10 +13,12 @@ import {NavigationProps} from './navigation/screenTypes';
 import {TextInput2} from './components/TextInput2';
 import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
+import {AuthContext} from '../auth/authContext';
 
 export const Login = ({navigation}: NavigationProps) => {
-  const [emailInput, setEmail] = useState('');
-  const [passwordInput, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const {logIn} = useContext(AuthContext);
 
   const URL = 'https://newpantry.herokuapp.com/api/login';
   const body = JSON.stringify({email: 'johnsmith@woah.com', password: 'ucf'});
@@ -46,11 +48,16 @@ export const Login = ({navigation}: NavigationProps) => {
           source={require('./assets/pantry.png')}
           style={localStyles.logo}
         />
-        <TextInput2 placeholder="username" />
+        <TextInput2 placeholder="email" onChangeText={setEmail} value={email} />
 
-        <TextInput2 placeholder="password" isPasswordField={true} />
+        <TextInput2
+          placeholder="password"
+          isPasswordField={true}
+          onChangeText={setPassword}
+          value={password}
+        />
 
-        <Button2 title={'login'} onPress={onLogin} />
+        <Button2 title={'login'} onPress={() => logIn(email, password)} />
 
         <View style={localStyles.message}>
           <Text style={localStyles.ask}>Not Registered?&nbsp;</Text>

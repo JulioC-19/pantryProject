@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useMemo, useReducer, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -9,6 +9,11 @@ import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
 import Icon from './UI/styles/icons';
+import {
+  initAuthState,
+  authStateReducer,
+  AuthActionTypes,
+} from './auth/authReducer';
 
 const SearchScreen = ({navigation}: NavigationProps) => {
   return (
@@ -49,11 +54,11 @@ const HomeBarIcon = () => {
 };
 
 function App() {
-  // Temporary set to true to access the user portal
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
+
   return (
     <NavigationContainer>
-      {isSignedIn ? (
+      {authState.userToken ? (
         <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
           <Tab.Screen
             name="Search"
