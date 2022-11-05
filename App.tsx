@@ -22,8 +22,10 @@ import {
 } from './UI/components/IconComponents';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const FavoriteScreen = ({navigation}: NavigationProps) => {
   return (
+    // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Favorite Screen</Text>
     </View>
@@ -45,6 +47,7 @@ function App() {
    * authContext will 'memoize' the functions that will handle the API loic
    * authContext is passed to AuthContext provider so that each screen wrap
    * within in it can access the logic of each funtion.
+   * TODO: Implement a loading spinner
    *
    * */
   const authContext = useMemo(
