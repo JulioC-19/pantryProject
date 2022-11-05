@@ -15,9 +15,7 @@ import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
 
 export const Login = ({navigation}: NavigationProps) => {
-  function onLogin() {
-    Alert.alert('Login successful!');
-  }
+  function onLogin() {}
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -27,8 +25,7 @@ export const Login = ({navigation}: NavigationProps) => {
           source={require('./assets/pantry.png')}
           style={localStyles.logo}
         />
-        <TextInput2 placeholder="username" />
-
+        <TextInput2 placeholder="email" />
         <TextInput2 placeholder="password" isPasswordField={true} />
 
         <Button2 title={'login'} onPress={onLogin} />

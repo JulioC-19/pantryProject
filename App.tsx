@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
 import {Login} from './UI/Login';
 import {HomeScreen} from './UI/HomeScreen';
+import {Search} from './UI/Search';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
@@ -57,7 +58,7 @@ function App() {
         <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
           <Tab.Screen
             name="Search"
-            component={SearchScreen}
+            component={Search}
             options={{tabBarIcon: SearchBarIcon}}
           />
           <Tab.Screen
