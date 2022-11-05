@@ -15,14 +15,8 @@ import {
   authStateReducer,
   AuthActionTypes,
 } from './auth/authReducer';
-
-const SearchScreen = ({navigation}: NavigationProps) => {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Search Screen</Text>
-    </View>
-  );
-};
+import {AuthContext} from './auth/authContext';
+const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
 const FavoriteScreen = ({navigation}: NavigationProps) => {
   return (
@@ -57,36 +51,71 @@ const HomeBarIcon = () => {
 function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
 
+  // This could be exported somehow, but need to figure out a way to hook up the useReducer()
+  const authContext = useMemo(
+    () => ({
+      logIn: async (email: String, password: String) => {
+        try {
+          console.log(email, password);
+          const response = await fetch(loginAPI, {
+            method: 'POST',
+            body: JSON.stringify({
+              email: email,
+              password: password,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const jsonResponse = await response.json();
+          console.log(jsonResponse);
+          if (response.status === 200) {
+            // If the response is good, need to dispatch the reducer to update the states
+            // Need to dispatch a payload with the corresponding values
+            // Need this authorization to be used as a token
+            console.log(response.headers.get('authorization'));
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      logOut: () => {},
+    }),
+    [],
+  );
+
   return (
-    <NavigationContainer>
-      {authState.userToken ? (
-        <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
-          <Tab.Screen
-            name="Search"
-            component={Search}
-            options={{tabBarIcon: SearchBarIcon}}
-          />
-          <Tab.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{tabBarIcon: HomeBarIcon}}
-          />
-          <Tab.Screen
-            name="Favorites"
-            component={FavoriteScreen}
-            options={{tabBarIcon: FavoriteBarIcon}}
-          />
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Signup" component={Signup} />
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+        {authState.userToken ? (
+          <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
+            <Tab.Screen
+              name="Search"
+              component={Search}
+              options={{tabBarIcon: SearchBarIcon}}
+            />
+            <Tab.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{tabBarIcon: HomeBarIcon}}
+            />
+            <Tab.Screen
+              name="Favorites"
+              component={FavoriteScreen}
+              options={{tabBarIcon: FavoriteBarIcon}}
+            />
+          </Tab.Navigator>
+        ) : (
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
 export default App;

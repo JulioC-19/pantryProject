@@ -21,6 +21,7 @@ export const initAuthState: AuthState = {
 
 type AuthAction = {type: AuthActionTypes};
 
+// This needs refactored to take a payload
 export function authStateReducer(
   state: AuthState,
   action: AuthAction,

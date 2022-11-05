@@ -19,11 +19,17 @@ export const Login = ({navigation}: NavigationProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {logIn} = useContext(AuthContext);
+  const print = () => {
+    console.log(email, password);
+    setEmail('');
+    setPassword('');
+  };
 
   const URL = 'https://newpantry.herokuapp.com/api/login';
-  const body = JSON.stringify({email: 'johnsmith@woah.com', password: 'ucf'});
+  const body = JSON.stringify({email: email, password: password});
 
   async function onLogin() {
+    console.log(body);
     try {
       const response = await fetch(URL, {
         method: 'POST',
@@ -32,7 +38,7 @@ export const Login = ({navigation}: NavigationProps) => {
           'Content-Type': 'application/json',
         },
       });
-      const jsonResponse = await response.json();
+      const jsonResponse = await response;
       console.log(jsonResponse);
     } catch (error) {
       console.log(error);

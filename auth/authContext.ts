@@ -2,7 +2,7 @@ import {createContext} from 'react';
 
 // This is the wrapper for the screens
 export type AuthContextData = {
-  logIn: (userName: String, password: String) => void;
+  logIn: (email: String, password: String) => void;
   logOut: () => void;
 };
 
