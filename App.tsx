@@ -1,4 +1,4 @@
-import React, {useMemo, useReducer, useState} from 'react';
+import React, {useMemo, useReducer} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -9,13 +9,17 @@ import {Search} from './UI/Search';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
-import Icon from './UI/styles/icons';
 import {
   initAuthState,
   authStateReducer,
   AuthActionTypes,
 } from './auth/authReducer';
 import {AuthContext} from './auth/authContext';
+import {
+  SearchBarIcon,
+  FavoriteBarIcon,
+  HomeBarIcon,
+} from './UI/components/IconComponents';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
 const FavoriteScreen = ({navigation}: NavigationProps) => {
@@ -34,24 +38,15 @@ const FavoriteScreen = ({navigation}: NavigationProps) => {
 const Stack = createStackNavigator<StackParamList>();
 const Tab = createMaterialBottomTabNavigator();
 
-const SearchBarIcon = () => {
-  return <Icon.Ionicons name="md-search" color={colors.white} size={26} />;
-};
-
-const FavoriteBarIcon = () => {
-  return <Icon.MaterialIcons name="favorite" color={colors.white} size={26} />;
-};
-
-const HomeBarIcon = () => {
-  return (
-    <Icon.MaterialCommunityIcons name="home" color={colors.white} size={28} />
-  );
-};
-
 function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
 
-  // This could be exported somehow, but need to figure out a way to hook up the useReducer()
+  /**
+   * authContext will 'memoize' the functions that will handle the API loic
+   * authContext is passed to AuthContext provider so that each screen wrap
+   * within in it can access the logic of each funtion.
+   *
+   * */
   const authContext = useMemo(
     () => ({
       logIn: async (email: String, password: String) => {
@@ -68,12 +63,17 @@ function App() {
             },
           });
           const jsonResponse = await response.json();
-          console.log(jsonResponse);
           if (response.status === 200) {
-            // If the response is good, need to dispatch the reducer to update the states
-            // Need to dispatch a payload with the corresponding values
-            // Need this authorization to be used as a token
-            console.log(response.headers.get('authorization'));
+            const authToken = response.headers.get('authorization');
+            dispatch({
+              type: AuthActionTypes.RETRIEVE_USER,
+              payload: {
+                email: jsonResponse.email,
+                password: jsonResponse.password,
+                authToken: authToken,
+                isLoading: false,
+              },
+            });
           }
         } catch (error) {
           console.log(error);
@@ -87,7 +87,7 @@ function App() {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {authState.userToken ? (
+        {authState.authToken ? (
           <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
             <Tab.Screen
               name="Search"

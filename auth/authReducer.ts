@@ -8,20 +8,25 @@ export enum AuthActionTypes {
 export type AuthState = {
   email: string;
   password: string;
-  userToken?: string | null;
+  authToken?: string | null;
   isLoading: boolean;
 };
 
 export const initAuthState: AuthState = {
   email: '',
   password: '',
-  userToken: null,
+  authToken: null,
   isLoading: false,
 };
+/**
+ * Takes in a payload what will contain the necessary data for
+ * the authentication process and the action types.
+ */
+type AuthAction = {
+  payload: AuthState;
+  type: AuthActionTypes;
+};
 
-type AuthAction = {type: AuthActionTypes};
-
-// This needs refactored to take a payload
 export function authStateReducer(
   state: AuthState,
   action: AuthAction,
@@ -30,17 +35,15 @@ export function authStateReducer(
     // First time the user logins
     case AuthActionTypes.LOGIN:
       return {
-        email: '',
-        password: '',
-        userToken: null,
-        isLoading: true,
+        ...state,
+        isLoading: action.payload.isLoading,
       };
-    // If user is authenticated, retrieve its information
+    // If user is authenticated, retrieve the information
     case AuthActionTypes.RETRIEVE_USER:
       return {
-        email: state.email,
-        password: state.password,
-        userToken: state.userToken,
+        email: action.payload.email,
+        password: action.payload.password,
+        authToken: action.payload.authToken,
         isLoading: false,
       };
     // Clear the user token, email and password
@@ -49,7 +52,7 @@ export function authStateReducer(
       return {
         email: '',
         password: '',
-        userToken: null,
+        authToken: null,
         isLoading: false,
       };
   }

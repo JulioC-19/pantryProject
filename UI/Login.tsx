@@ -1,6 +1,5 @@
 import React, {useContext, useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -19,36 +18,11 @@ export const Login = ({navigation}: NavigationProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {logIn} = useContext(AuthContext);
-  const print = () => {
-    console.log(email, password);
-    setEmail('');
-    setPassword('');
-  };
-
-  const URL = 'https://newpantry.herokuapp.com/api/login';
-  const body = JSON.stringify({email: email, password: password});
-
-  async function onLogin() {
-    console.log(body);
-    try {
-      const response = await fetch(URL, {
-        method: 'POST',
-        body: body,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const jsonResponse = await response;
-      console.log(jsonResponse);
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{flex: 1}}>
+      style={localStyles.flexOne}>
       <View style={localStyles.container}>
         <Image
           source={require('./assets/pantry.png')}
@@ -102,4 +76,5 @@ const localStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
+  flexOne: {flex: 1},
 });
