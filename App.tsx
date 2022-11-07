@@ -4,19 +4,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
 import {Login} from './UI/Login';
+import {HomeScreen} from './UI/HomeScreen';
 import {Search} from './UI/Search';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
 import Icon from './UI/styles/icons';
-
-const HomeScreen = ({navigation}: NavigationProps) => {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-};
 
 const SearchScreen = ({navigation}: NavigationProps) => {
   return (
