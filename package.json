@@ -20,7 +20,7 @@
     "@rneui/base": "github:react-native-elements/react-native-elements#base",
     "@rneui/themed": "github:react-native-elements/react-native-elements#themed",
     "react": "18.1.0",
-    "react-native": "0.70.3",
+    "react-native": "0.70.5",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-paper": "^4.12.5",
     "react-native-safe-area-context": "^4.4.1",
