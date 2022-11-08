@@ -6,6 +6,7 @@ import {Signup} from './UI/Signup';
 import {Login} from './UI/Login';
 import {HomeScreen} from './UI/HomeScreen';
 import {Search} from './UI/Search';
+import {ProfileScreen} from './UI/Profile';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
@@ -19,6 +20,7 @@ import {
   SearchBarIcon,
   FavoriteBarIcon,
   HomeBarIcon,
+  ProfileBarIcon,
 } from './UI/components/IconComponents';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
@@ -106,6 +108,11 @@ function App() {
               name="Favorites"
               component={FavoriteScreen}
               options={{tabBarIcon: FavoriteBarIcon}}
+            />
+            <Tab.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{tabBarIcon: ProfileBarIcon}}
             />
           </Tab.Navigator>
         ) : (

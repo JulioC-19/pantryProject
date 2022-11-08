@@ -15,3 +15,7 @@ export const HomeBarIcon = () => {
     <Icon.MaterialCommunityIcons name="home" color={colors.white} size={28} />
   );
 };
+
+export const ProfileBarIcon = () => {
+  return <Icon.FontAwesome name="user" color={colors.white} size={28} />;
+};
