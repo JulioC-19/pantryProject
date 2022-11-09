@@ -1,4 +1,4 @@
-import React, {useMemo, useReducer} from 'react';
+import React, {useEffect, useMemo, useReducer} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -22,6 +22,7 @@ import {
   HomeBarIcon,
   ProfileBarIcon,
 } from './UI/components/IconComponents';
+import {LoadingModal} from './UI/components/LoadingModal';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -55,6 +56,7 @@ function App() {
   const authContext = useMemo(
     () => ({
       logIn: async (email: String, password: String) => {
+        dispatch({type: AuthActionTypes.LOGIN, payload: {isLoading: true}});
         try {
           console.log(email, password);
           const response = await fetch(loginAPI, {
@@ -81,6 +83,8 @@ function App() {
             });
           }
         } catch (error) {
+          dispatch({type: AuthActionTypes.FAIL});
+          // TODO: Implement an alert to the screen
           console.log(error);
         }
       },
@@ -89,10 +93,31 @@ function App() {
     [],
   );
 
+  // Used for authentication state persistance
+  useEffect(() => {
+    if (authState.authToken) {
+      return;
+    }
+  });
+
+  console.log(authState.isLoading, authState.authToken);
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {authState.authToken ? (
+        {authState.isLoading ? (
+          <LoadingModal
+            isVisible={authState.isLoading}
+            message={'Loading...'}
+          />
+        ) : authState.authToken == null ? (
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+          </Stack.Navigator>
+        ) : (
           <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
             <Tab.Screen
               name="Search"
@@ -115,14 +140,6 @@ function App() {
               options={{tabBarIcon: ProfileBarIcon}}
             />
           </Tab.Navigator>
-        ) : (
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-            }}>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Signup" component={Signup} />
-          </Stack.Navigator>
         )}
       </NavigationContainer>
     </AuthContext.Provider>
