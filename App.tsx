@@ -22,7 +22,7 @@ import {
   HomeBarIcon,
   ProfileBarIcon,
 } from './UI/components/IconComponents';
-import {LoadingModal} from './UI/components/LoadingModal';
+import {LoadingScreen} from './UI/components/LoadingScreen';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -105,10 +105,7 @@ function App() {
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         {authState.isLoading ? (
-          <LoadingModal
-            isVisible={authState.isLoading}
-            message={'Loading...'}
-          />
+          <LoadingScreen message={'Loading...'} />
         ) : authState.authToken == null ? (
           <Stack.Navigator
             screenOptions={{
