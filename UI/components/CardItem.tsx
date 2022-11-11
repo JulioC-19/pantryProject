@@ -7,6 +7,8 @@ import {
   View,
   ColorValue,
   TouchableOpacityProps,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import {colors} from '../styles/colors';
 import {Icon} from '@rneui/themed';
@@ -25,6 +27,7 @@ type cardItemProps = {
 
 interface heartProps extends TouchableOpacityProps {
   heartBackgroundColor: ColorValue;
+  containerStyle?: StyleProp<ViewStyle>;
   onPress: () => void;
 }
 export const CardItem = (props: cardItemProps) => {
@@ -59,9 +62,9 @@ export const CardItem = (props: cardItemProps) => {
   );
 };
 
-const FavoriteIcon = (props: heartProps) => {
+export const FavoriteIcon = (props: heartProps) => {
   return (
-    <View style={styles.favoriteContainer}>
+    <View style={props.containerStyle ?? styles.favoriteContainer}>
       <TouchableOpacity
         style={[
           styles.heartIconContainer,
