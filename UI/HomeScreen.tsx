@@ -28,7 +28,7 @@ export const HomeScreen = () => {
         'https://www.themealdb.com/api/json/v2/9973533/latest.php',
       );
       const jsonMeals = await response.json();
-      setLatestMeals(jsonMeals.meals);
+      setLatestMeals(jsonMeals.meals.slice(0, 5));
     } catch (error) {
       console.log(error);
     } finally {
