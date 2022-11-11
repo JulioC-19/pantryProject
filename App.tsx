@@ -106,7 +106,7 @@ function App() {
       <NavigationContainer>
         {authState.isLoading ? (
           <LoadingScreen message={'Loading...'} />
-        ) : authState.authToken == null ? (
+        ) : authState.authToken ? (
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
