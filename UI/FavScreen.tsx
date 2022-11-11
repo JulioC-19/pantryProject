@@ -8,7 +8,6 @@ import {
   Modal,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
 } from 'react-native';
 import {NavigationProps} from './navigation/screenTypes';
 import {colors} from './styles/colors';
@@ -39,7 +38,7 @@ export const FavScreen = ({navigation}: NavigationProps) => {
         </View>
 
         <Modal animationType="fade" visible={isModalVisible} transparent>
-          <KeyboardAvoidingView style={localStyles.centeredView}>
+          <View style={localStyles.centeredView}>
             <View style={localStyles.modalView}>
               <Text style={localStyles.text}>Ingredient</Text>
               <View style={localStyles.inputContainer}>
@@ -50,14 +49,8 @@ export const FavScreen = ({navigation}: NavigationProps) => {
               </View>
               <Button title="Add" onPress={handleModal} />
             </View>
-          </KeyboardAvoidingView>
+          </View>
         </Modal>
-        <View style={localStyles.inputContainer}>
-          <TextInput
-            value={Ingredient}
-            onChangeText={ingredient => setIngredient(ingredient)}
-          />
-        </View>
       </View>
     </View>
   );
@@ -65,17 +58,17 @@ export const FavScreen = ({navigation}: NavigationProps) => {
 
 const localStyles = StyleSheet.create({
   container: {
-    marginVertical: '8%',
-    marginHorizontal: '6%',
-    paddingTop: '5%',
+    marginVertical: 15,
+    marginHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   switch: {
-    width: '100%',
-    height: '10%',
-    marginVertical: '8%',
+    width: 250,
+    height: 50,
+    marginTop: '15%',
+    marginBottom: '6%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.gleeful,
@@ -86,7 +79,7 @@ const localStyles = StyleSheet.create({
     backgroundColor: '#E3E3E3',
     borderRadius: 20,
     width: '100%',
-    height: '80%',
+    height: 440,
   },
 
   buttonBox: {
