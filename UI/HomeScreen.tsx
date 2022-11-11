@@ -28,7 +28,7 @@ export const HomeScreen = () => {
         'https://www.themealdb.com/api/json/v2/9973533/latest.php',
       );
       const jsonMeals = await response.json();
-      setLatestMeals(jsonMeals.meals);
+      setLatestMeals(jsonMeals.meals.slice(0, 5));
     } catch (error) {
       console.log(error);
     } finally {
@@ -57,10 +57,16 @@ export const HomeScreen = () => {
               showsHorizontalScrollIndicator={false}
               data={meals}
               horizontal={true}
-              keyExtractor={(item, index) => {
+              keyExtractor={(item: any, index) => {
                 return item.idMeal;
               }}
-              renderItem={({item}) => CardItem(item)}
+              renderItem={({item}: any) => (
+                <CardItem
+                  uri={item.strMealThumb}
+                  title={item.strMeal}
+                  instructions={item.strInstructions}
+                />
+              )}
             />
           </View>
           <View style={{paddingBottom: 250}}>
@@ -70,10 +76,16 @@ export const HomeScreen = () => {
               data={latestMeals.slice(0, 10)}
               numColumns={2}
               horizontal={false}
-              keyExtractor={(item, index) => {
+              keyExtractor={(item: any, index) => {
                 return item.idMeal;
               }}
-              renderItem={({item}) => CardItem(item)}
+              renderItem={({item}: any) => (
+                <CardItem
+                  uri={item.strMealThumb}
+                  title={item.strMeal}
+                  instructions={item.strInstructions}
+                />
+              )}
             />
           </View>
         </>
