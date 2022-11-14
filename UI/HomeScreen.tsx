@@ -41,7 +41,8 @@ export const HomeScreen = () => {
     getLastestMeals();
   }, []);
 
-  console.log(JSON.stringify(meals[0]));
+  //console.log(JSON.stringify(meals[0]));
+
   return (
     <View style={{flex: 1, padding: 10}}>
       {isLoading ? (

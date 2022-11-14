@@ -45,12 +45,13 @@ const Tab = createMaterialBottomTabNavigator();
 
 function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
+  const md5 = require('md5');
 
   /**
    * authContext will 'memoize' the functions that will handle the API loic
    * authContext is passed to AuthContext provider so that each screen wrap
    * within in it can access the logic of each funtion.
-   * TODO: Implement a loading spinner
+   *
    *
    * */
   const authContext = useMemo(
@@ -63,7 +64,7 @@ function App() {
             method: 'POST',
             body: JSON.stringify({
               email: email,
-              password: password,
+              password: md5(password),
             }),
             headers: {
               'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ function App() {
       },
       logOut: () => {},
     }),
-    [],
+    [md5],
   );
 
   // Used for authentication state persistance
@@ -106,7 +107,7 @@ function App() {
       <NavigationContainer>
         {authState.isLoading ? (
           <LoadingScreen message={'Loading...'} />
-        ) : authState.authToken ? (
+        ) : authState.authToken === null ? (
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
