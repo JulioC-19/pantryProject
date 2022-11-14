@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Dimensions, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {colors} from './styles/colors';
@@ -25,23 +25,15 @@ const Tab = createMaterialTopTabNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator
+      style={localStyles.tabNavigatorStyle}
       initialRouteName="Favorites"
       initialLayout={{
         width: Dimensions.get('window').width,
       }}
       screenOptions={{
-        tabBarLabelStyle: {fontSize: 12, color: colors.white},
-        tabBarStyle: {
-          backgroundColor: colors.darkOliveGreen,
-          width: '80%',
-          alignSelf: 'center',
-          borderRadius: 20,
-        },
-        tabBarIndicatorStyle: {
-          backgroundColor: colors.gleeful,
-          height: '100%',
-          borderRadius: 20,
-        },
+        tabBarLabelStyle: localStyles.tabBarLabelStyle,
+        tabBarStyle: localStyles.tabBarStyle,
+        tabBarIndicatorStyle: localStyles.tabBarIndicatorStyle,
       }}>
       <Tab.Screen
         name="Favorites"
@@ -64,3 +56,24 @@ export const UserFavScreen = () => {
     </NavigationContainer>
   );
 };
+
+const localStyles = StyleSheet.create({
+  tabNavigatorStyle: {paddingTop: 10},
+  tabBarLabelStyle: {
+    fontSize: 16,
+    color: colors.white,
+    fontStyle: 'normal',
+    fontFamily: 'Barlow',
+  },
+  tabBarStyle: {
+    backgroundColor: colors.darkOliveGreen,
+    width: '80%',
+    alignSelf: 'center',
+    borderRadius: 20,
+  },
+  tabBarIndicatorStyle: {
+    backgroundColor: colors.gleeful,
+    height: '100%',
+    borderRadius: 20,
+  },
+});
