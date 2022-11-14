@@ -69,11 +69,11 @@ const localStyles = StyleSheet.create({
     backgroundColor: colors.darkOliveGreen,
     width: '80%',
     alignSelf: 'center',
-    borderRadius: 20,
+    borderRadius: 30,
   },
   tabBarIndicatorStyle: {
     backgroundColor: colors.gleeful,
     height: '100%',
-    borderRadius: 20,
+    borderRadius: 30,
   },
 });
