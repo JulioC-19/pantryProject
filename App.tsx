@@ -6,6 +6,7 @@ import {Signup} from './UI/Signup';
 import {Login} from './UI/Login';
 import {HomeScreen} from './UI/HomeScreen';
 import {Search} from './UI/Search';
+import {UserFavScreen} from './UI/UserFavScreen';
 import {ProfileScreen} from './UI/Profile';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
@@ -25,10 +26,8 @@ import {
 import {LoadingScreen} from './UI/components/LoadingScreen';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const FavoriteScreen = ({navigation}: NavigationProps) => {
   return (
-    // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Favorite Screen</Text>
     </View>
@@ -107,7 +106,7 @@ function App() {
       <NavigationContainer>
         {authState.isLoading ? (
           <LoadingScreen message={'Loading...'} />
-        ) : authState.authToken === null ? (
+        ) : authState.authToken ? (
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
@@ -129,7 +128,7 @@ function App() {
             />
             <Tab.Screen
               name="Favorites"
-              component={FavoriteScreen}
+              component={UserFavScreen}
               options={{tabBarIcon: FavoriteBarIcon}}
             />
             <Tab.Screen
