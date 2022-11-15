@@ -5,7 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
 import {Login} from './UI/Login';
 import {Search} from './UI/Search';
-import {FavScreen} from './UI/FavScreen';
+import {PantryScreen} from './UI/PantryScreen';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
@@ -76,7 +76,7 @@ function App() {
           />
           <Tab.Screen
             name="Favorites"
-            component={FavScreen}
+            component={PantryScreen}
             options={{tabBarIcon: FavoriteBarIcon}}
           />
         </Tab.Navigator>
