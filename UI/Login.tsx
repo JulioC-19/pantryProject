@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,22 +12,32 @@ import {NavigationProps} from './navigation/screenTypes';
 import {TextInput2} from './components/TextInput2';
 import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
+import {AuthContext} from '../auth/authContext';
 
 export const Login = ({navigation}: NavigationProps) => {
-  function onLogin() {}
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const {logIn} = useContext(AuthContext);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{flex: 1}}>
+      style={localStyles.flexOne}>
       <View style={localStyles.container}>
         <Image
           source={require('./assets/pantry.png')}
           style={localStyles.logo}
         />
-        <TextInput2 placeholder="email" />
-        <TextInput2 placeholder="password" isPasswordField={true} />
+        <TextInput2 placeholder="email" onChangeText={setEmail} value={email} />
 
-        <Button2 title={'login'} onPress={onLogin} />
+        <TextInput2
+          placeholder="password"
+          isPasswordField={true}
+          onChangeText={setPassword}
+          value={password}
+        />
+
+        <Button2 title={'login'} onPress={() => logIn(email, password)} />
 
         <View style={localStyles.message}>
           <Text style={localStyles.ask}>Not Registered?&nbsp;</Text>
@@ -67,4 +76,5 @@ const localStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
+  flexOne: {flex: 1},
 });
