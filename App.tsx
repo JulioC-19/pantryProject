@@ -8,6 +8,7 @@ import {HomeScreen} from './UI/HomeScreen';
 import {Search} from './UI/Search';
 import {UserFavScreen} from './UI/UserFavScreen';
 import {ProfileScreen} from './UI/Profile';
+import {PantryScreen} from './UI/PantryScreen';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
@@ -106,7 +107,7 @@ function App() {
       <NavigationContainer>
         {authState.isLoading ? (
           <LoadingScreen message={'Loading...'} />
-        ) : authState.authToken ? (
+        ) : authState.authToken === null ? (
           <Stack.Navigator
             screenOptions={{
               headerShown: false,

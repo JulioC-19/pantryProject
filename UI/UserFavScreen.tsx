@@ -3,19 +3,12 @@ import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {colors} from './styles/colors';
+import {PantryScreen} from '../UI/PantryScreen';
 
 function FavScreen() {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Favorites!</Text>
-    </View>
-  );
-}
-
-function PantryScreen() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Pantry!</Text>
     </View>
   );
 }

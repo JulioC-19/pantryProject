@@ -45,7 +45,6 @@ export const Search = ({navigation}: NavigationProps) => {
             <TextInput
               style={localStyles.textStyle}
               value={Keyword}
-              onChangeText={keyword => setKeyword(keyword)}
               onEndEditing={() => {
                 //navigation.navigate('SearchResult', {});
                 Alert.alert('Searching for "' + Keyword + '"');
