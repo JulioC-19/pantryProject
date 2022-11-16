@@ -13,6 +13,7 @@ import {NavigationProps} from './navigation/screenTypes';
 import {TextInput2} from './components/TextInput2';
 import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
+const signupAPI = 'https://newpantry.herokuapp.com/api/signup';
 
 export const Signup = ({navigation}: NavigationProps) => {
   const [firstName, setFirstName] = useState('');
@@ -21,19 +22,45 @@ export const Signup = ({navigation}: NavigationProps) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  /**
-   * Handles the sing up logic.
-   * For now, it just display an alert with the user's first and last name.
-   * Resets the fields after the sign up logic is executed.
-   */
-  function onSignUp() {
-    Alert.alert(firstName + ' ' + lastName);
+  const body = JSON.stringify({
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: confirmPassword,
+    profilePicture: 'https://imgur.com/a/Rp2BmKr',
+  });
+
+  function emptyField() {
     setFirstName('');
     setLastName('');
     setEmail('');
     setPassword('');
     setConfirmPassword('');
   }
+
+  /**
+   * Handles the sing up logic.
+   * For now, it just display an alert with the user's first and last name.
+   * Resets the fields after the sign up logic is executed.
+   */
+  const onSignUp = async () => {
+    console.log(body);
+    try {
+      const response = await fetch(signupAPI, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const json = await response.json();
+      console.log(json);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  };
 
   return (
     <KeyboardAvoidingView
