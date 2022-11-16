@@ -1,14 +1,14 @@
 import React, {useEffect, useMemo, useReducer} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
 import {Login} from './UI/Login';
 import {HomeScreen} from './UI/HomeScreen';
 import {Search} from './UI/Search';
+import {UserFavScreen} from './UI/UserFavScreen';
 import {ProfileScreen} from './UI/Profile';
-import {PantryScreen} from './UI/PantryScreen';
-import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
+import {StackParamList} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
 import {
@@ -26,16 +26,6 @@ import {
 import {LoadingScreen} from './UI/components/LoadingScreen';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const FavoriteScreen = ({navigation}: NavigationProps) => {
-  return (
-    // eslint-disable-next-line react-native/no-inline-styles
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Favorite Screen</Text>
-    </View>
-  );
-};
-
 /**
  * This navigator stack contains the app's screens.
  * If a new screen is needed, it must be added to StackParamList types.ts, so
@@ -46,12 +36,13 @@ const Tab = createMaterialBottomTabNavigator();
 
 function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
+  const md5 = require('md5');
 
   /**
    * authContext will 'memoize' the functions that will handle the API loic
    * authContext is passed to AuthContext provider so that each screen wrap
    * within in it can access the logic of each funtion.
-   * TODO: Implement a loading spinner
+   *
    *
    * */
   const authContext = useMemo(
@@ -64,7 +55,7 @@ function App() {
             method: 'POST',
             body: JSON.stringify({
               email: email,
-              password: password,
+              password: md5(password),
             }),
             headers: {
               'Content-Type': 'application/json',
@@ -91,7 +82,7 @@ function App() {
       },
       logOut: () => {},
     }),
-    [],
+    [md5],
   );
 
   // Used for authentication state persistance
@@ -107,7 +98,7 @@ function App() {
       <NavigationContainer>
         {authState.isLoading ? (
           <LoadingScreen message={'Loading...'} />
-        ) : authState.authToken == null ? (
+        ) : authState.authToken === null ? (
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
@@ -129,7 +120,7 @@ function App() {
             />
             <Tab.Screen
               name="Favorites"
-              component={PantryScreen}
+              component={UserFavScreen}
               options={{tabBarIcon: FavoriteBarIcon}}
             />
             <Tab.Screen

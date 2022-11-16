@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,16 +20,17 @@ export const Signup = ({navigation}: NavigationProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const md5 = require('md5');
 
   const body = JSON.stringify({
     firstName: firstName,
     lastName: lastName,
     email: email,
-    password: confirmPassword,
+    password: md5(confirmPassword),
     profilePicture: 'https://imgur.com/a/Rp2BmKr',
   });
 
-  function emptyField() {
+  function emptyFields() {
     setFirstName('');
     setLastName('');
     setEmail('');
@@ -56,6 +56,7 @@ export const Signup = ({navigation}: NavigationProps) => {
       const json = await response.json();
       console.log(json);
       console.log(response);
+      emptyFields();
     } catch (error) {
       console.error(error);
     } finally {

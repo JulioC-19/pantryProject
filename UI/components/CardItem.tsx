@@ -1,30 +1,70 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   View,
   ColorValue,
   TouchableOpacityProps,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import {colors} from '../styles/colors';
 import {Icon} from '@rneui/themed';
+import {RecipeScreen} from '../RecipeScreen';
 
 type headerProps = {
   title: String;
   color: ColorValue;
 };
 
+type cardItemProps = {
+  uri: string;
+  title: string;
+  instructions?: string;
+};
+
 interface heartProps extends TouchableOpacityProps {
   heartBackgroundColor: ColorValue;
+  containerStyle?: StyleProp<ViewStyle>;
   onPress: () => void;
 }
+export const CardItem = (props: cardItemProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  console.log(isVisible);
 
-const FavoriteIcon = (props: heartProps) => {
   return (
-    <View style={styles.favoriteContainer}>
+    <View>
+      <RecipeScreen
+        recipeName={props.title}
+        isVisible={isVisible}
+        source={{uri: props.uri}}
+        onHide={() => setIsVisible(!isVisible)}
+        instructions={props.instructions}
+      />
+
+      <TouchableOpacity onPress={() => setIsVisible(!isVisible)}>
+        <ImageBackground
+          style={styles.imageBackground}
+          source={{uri: props.uri}}
+          imageStyle={styles.cardRadius}>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}> {props.title}</Text>
+          </View>
+          <FavoriteIcon
+            heartBackgroundColor={colors.goldenRod}
+            onPress={() => null}
+          />
+        </ImageBackground>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export const FavoriteIcon = (props: heartProps) => {
+  return (
+    <View style={props.containerStyle ?? styles.favoriteContainer}>
       <TouchableOpacity
         style={[
           styles.heartIconContainer,
@@ -34,26 +74,6 @@ const FavoriteIcon = (props: heartProps) => {
         <Icon name="heart" color={colors.white} size={20} type="ionicon" />
       </TouchableOpacity>
     </View>
-  );
-};
-
-// TODO: Need to define proper properties for the list item
-export const CardItem = (item: any) => {
-  return (
-    <TouchableOpacity onPress={() => Alert.alert(item.strMeal)}>
-      <ImageBackground
-        style={styles.imageBackground}
-        source={{uri: item.strMealThumb}}
-        imageStyle={styles.cardRadius}>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}> {item.strMeal}</Text>
-        </View>
-        <FavoriteIcon
-          heartBackgroundColor={colors.goldenRod}
-          onPress={() => null}
-        />
-      </ImageBackground>
-    </TouchableOpacity>
   );
 };
 

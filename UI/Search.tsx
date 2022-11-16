@@ -14,10 +14,25 @@ import {CategoryBotton} from './components/CategoryBotton';
 
 export const Search = ({navigation}: NavigationProps) => {
   const [Keyword, setKeyword] = useState('');
+  const [isLoading, setLoading] = useState(true);
+  const [meals, setMeals] = useState([]);
 
-  function recipePage() {
-    Alert.alert('Recipe');
-  }
+  const URL = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=';
+
+  function recipePage() {}
+
+  const getCategoryMeals = async (categoryChoice: string) => {
+    try {
+      const response = await fetch(URL + categoryChoice);
+      const jsonMeals = await response.json();
+      setMeals(jsonMeals.meals);
+      console.log(meals);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ScrollView>
@@ -44,7 +59,7 @@ export const Search = ({navigation}: NavigationProps) => {
             <CategoryBotton
               title={'Breakfast'}
               backgroundColor={colors.gleeful}
-              onPress={recipePage}
+              onPress={() => getCategoryMeals('Breakfast')}
             />
             <CategoryBotton
               title={'Starter'}
