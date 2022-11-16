@@ -8,6 +8,7 @@ export type StackParamList = {
   Login: {};
   Search: {};
   LoadingScreen: {};
+  PantryScreen: {};
 };
 
 /**
