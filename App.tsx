@@ -7,6 +7,7 @@ import {Login} from './UI/Login';
 import {HomeScreen} from './UI/HomeScreen';
 import {Search} from './UI/Search';
 import {ProfileScreen} from './UI/Profile';
+import {PantryScreen} from './UI/PantryScreen';
 import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
@@ -128,7 +129,7 @@ function App() {
             />
             <Tab.Screen
               name="Favorites"
-              component={FavoriteScreen}
+              component={PantryScreen}
               options={{tabBarIcon: FavoriteBarIcon}}
             />
             <Tab.Screen
