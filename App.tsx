@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useReducer} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
@@ -8,8 +8,7 @@ import {HomeScreen} from './UI/HomeScreen';
 import {Search} from './UI/Search';
 import {UserFavScreen} from './UI/UserFavScreen';
 import {ProfileScreen} from './UI/Profile';
-import {PantryScreen} from './UI/PantryScreen';
-import {StackParamList, NavigationProps} from './UI/navigation/screenTypes';
+import {StackParamList} from './UI/navigation/screenTypes';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {colors} from './UI/styles/colors';
 import {
@@ -26,14 +25,6 @@ import {
 } from './UI/components/IconComponents';
 import {LoadingScreen} from './UI/components/LoadingScreen';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
-
-const FavoriteScreen = ({navigation}: NavigationProps) => {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Favorite Screen</Text>
-    </View>
-  );
-};
 
 /**
  * This navigator stack contains the app's screens.

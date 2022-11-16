@@ -7,6 +7,7 @@ import {PantryScreen} from '../UI/PantryScreen';
 
 function FavScreen() {
   return (
+    // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Favorites!</Text>
     </View>
