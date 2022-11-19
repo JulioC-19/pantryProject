@@ -1,12 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {ActivityIndicator, FlatList, View} from 'react-native';
 import {CardItem, ListHeader} from './components/CardItem';
 import {colors} from './styles/colors';
+import {AuthContext} from '../auth/authContext';
 
 export const HomeScreen = () => {
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
   const [latestMeals, setLatestMeals] = useState([]);
+  const {email, favoriteRecipes} = useContext(AuthContext);
+  console.log('Data? ' + email, favoriteRecipes);
 
   const getRandomMeals = async () => {
     try {
@@ -42,6 +45,19 @@ export const HomeScreen = () => {
   }, []);
 
   //console.log(JSON.stringify(meals[0]));
+  const cardItem = (item: {
+    strMealThumb: string;
+    strMeal: string;
+    strInstructions: string | undefined;
+  }) => {
+    return (
+      <CardItem
+        uri={item.strMealThumb}
+        title={item.strMeal}
+        instructions={item.strInstructions}
+      />
+    );
+  };
 
   return (
     <View style={{flex: 1, padding: 10}}>
@@ -61,13 +77,7 @@ export const HomeScreen = () => {
               keyExtractor={(item: any, index) => {
                 return item.idMeal;
               }}
-              renderItem={({item}: any) => (
-                <CardItem
-                  uri={item.strMealThumb}
-                  title={item.strMeal}
-                  instructions={item.strInstructions}
-                />
-              )}
+              renderItem={({item}: any) => cardItem(item)}
             />
           </View>
           <View style={{paddingBottom: 250}}>
@@ -80,13 +90,7 @@ export const HomeScreen = () => {
               keyExtractor={(item: any, index) => {
                 return item.idMeal;
               }}
-              renderItem={({item}: any) => (
-                <CardItem
-                  uri={item.strMealThumb}
-                  title={item.strMeal}
-                  instructions={item.strInstructions}
-                />
-              )}
+              renderItem={({item}: any) => cardItem(item)}
             />
           </View>
         </>

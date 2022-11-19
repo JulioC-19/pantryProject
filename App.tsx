@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useReducer} from 'react';
+import React, {useEffect, useMemo, useReducer, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -24,6 +24,7 @@ import {
   ProfileBarIcon,
 } from './UI/components/IconComponents';
 import {LoadingScreen} from './UI/components/LoadingScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 
 /**
@@ -36,7 +37,28 @@ const Tab = createMaterialBottomTabNavigator();
 
 function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
+  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const md5 = require('md5');
+  const getAuthToken = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@authToken');
+      const email = await AsyncStorage.getItem('@email');
+      const password = await AsyncStorage.getItem('@password');
+      if (value !== null) {
+        dispatch({
+          type: AuthActionTypes.RETRIEVE_USER,
+          payload: {
+            email: email,
+            password: password,
+            authToken: value,
+            isLoading: false,
+          },
+        });
+      }
+    } catch (e) {
+      console.log('READING ERROR ' + e);
+    }
+  };
 
   /**
    * authContext will 'memoize' the functions that will handle the API loic
@@ -62,17 +84,30 @@ function App() {
             },
           });
           const jsonResponse = await response.json();
+          setFavoriteRecipes(jsonResponse.favoriteRecipes);
+          console.log(jsonResponse.confirmToken);
           if (response.status === 200) {
-            const authToken = response.headers.get('authorization');
             dispatch({
               type: AuthActionTypes.RETRIEVE_USER,
               payload: {
                 email: jsonResponse.email,
                 password: jsonResponse.password,
-                authToken: authToken,
+                authToken: jsonResponse.confirmToken,
                 isLoading: false,
               },
             });
+            // Set authentication token to asyncStorage
+            try {
+              await AsyncStorage.setItem(
+                '@authToken',
+                jsonResponse.confirmToken,
+              );
+              await AsyncStorage.setItem('@email', jsonResponse.email);
+              await AsyncStorage.setItem('@password', jsonResponse.password);
+            } catch (e) {
+              // saving error
+              console.log('SAVING ERROR ' + e);
+            }
           }
         } catch (error) {
           dispatch({type: AuthActionTypes.FAIL});
@@ -81,18 +116,19 @@ function App() {
         }
       },
       logOut: () => {},
+      email: authState.email,
+      token: authState.authToken,
+      favoriteRecipes: favoriteRecipes,
     }),
-    [md5],
+    [authState.authToken, authState.email, favoriteRecipes, md5],
   );
 
   // Used for authentication state persistance
   useEffect(() => {
-    if (authState.authToken) {
-      return;
-    }
+    // Fetch the token from storage then navigate to our appropriate place
+    getAuthToken();
   });
 
-  console.log(authState.isLoading, authState.authToken);
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
@@ -117,6 +153,7 @@ function App() {
               name="Home"
               component={HomeScreen}
               options={{tabBarIcon: HomeBarIcon}}
+              initialParams={{email: authState.email}}
             />
             <Tab.Screen
               name="Favorites"

@@ -23,6 +23,7 @@ type cardItemProps = {
   uri: string;
   title: string;
   instructions?: string;
+  userEmail?: string;
 };
 
 interface heartProps extends TouchableOpacityProps {
@@ -32,7 +33,6 @@ interface heartProps extends TouchableOpacityProps {
 }
 export const CardItem = (props: cardItemProps) => {
   const [isVisible, setIsVisible] = useState(false);
-  console.log(isVisible);
 
   return (
     <View>

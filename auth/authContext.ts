@@ -4,9 +4,15 @@ import {createContext} from 'react';
 export type AuthContextData = {
   logIn: (email: String, password: String) => void;
   logOut: () => void;
+  email: string | null | undefined;
+  token: string | null | undefined;
+  favoriteRecipes: string[];
 };
 
 export const AuthContext = createContext<AuthContextData>({
   logIn: (_userName: String, _password: String) => {},
   logOut: () => {},
+  email: '',
+  token: '',
+  favoriteRecipes: [],
 });

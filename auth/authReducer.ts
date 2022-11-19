@@ -6,8 +6,8 @@ export enum AuthActionTypes {
 }
 
 export type AuthState = {
-  email?: string;
-  password?: string;
+  email?: string | null;
+  password?: string | null;
   authToken?: string | null;
   isLoading?: boolean;
 };
