@@ -1,15 +1,12 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
 import {CardItem, ListHeader} from './components/CardItem';
 import {colors} from './styles/colors';
-import {AuthContext} from '../auth/authContext';
 
 export const HomeScreen = () => {
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
   const [latestMeals, setLatestMeals] = useState([]);
-  const {email, favoriteRecipes} = useContext(AuthContext);
-  console.log('Data? ' + email, favoriteRecipes);
 
   const getRandomMeals = async () => {
     try {
@@ -60,7 +57,7 @@ export const HomeScreen = () => {
   };
 
   return (
-    <View style={{flex: 1, padding: 10}}>
+    <View style={localStyles.screenContainer}>
       {isLoading ? (
         <ActivityIndicator />
       ) : (
@@ -74,20 +71,20 @@ export const HomeScreen = () => {
               showsHorizontalScrollIndicator={false}
               data={meals}
               horizontal={true}
-              keyExtractor={(item: any, index) => {
+              keyExtractor={(item: any, _index) => {
                 return item.idMeal;
               }}
               renderItem={({item}: any) => cardItem(item)}
             />
           </View>
-          <View style={{paddingBottom: 250}}>
+          <View style={localStyles.listContainer}>
             <ListHeader title={'TRENDING'} color={colors.mountainIris} />
             <FlatList
               showsVerticalScrollIndicator={false}
               data={latestMeals.slice(0, 10)}
               numColumns={2}
               horizontal={false}
-              keyExtractor={(item: any, index) => {
+              keyExtractor={(item: any, _index) => {
                 return item.idMeal;
               }}
               renderItem={({item}: any) => cardItem(item)}
@@ -98,3 +95,10 @@ export const HomeScreen = () => {
     </View>
   );
 };
+
+const localStyles = StyleSheet.create({
+  screenContainer: {flex: 1, padding: 10},
+  listContainer: {
+    paddingBottom: 250,
+  },
+});

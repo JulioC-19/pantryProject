@@ -53,7 +53,7 @@ const localStyles = StyleSheet.create({
   },
   tabBarStyle: {
     backgroundColor: colors.darkOliveGreen,
-    width: '80%',
+    width: '90%',
     alignSelf: 'center',
     borderRadius: 30,
   },
