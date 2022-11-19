@@ -5,14 +5,14 @@ export type AuthContextData = {
   logIn: (email: String, password: String) => void;
   logOut: () => void;
   email: string | null | undefined;
+  password: string | null | undefined;
   token: string | null | undefined;
-  favoriteRecipes: string[];
 };
 
 export const AuthContext = createContext<AuthContextData>({
   logIn: (_userName: String, _password: String) => {},
   logOut: () => {},
   email: '',
+  password: '',
   token: '',
-  favoriteRecipes: [],
 });

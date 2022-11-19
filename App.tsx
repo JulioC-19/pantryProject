@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useReducer, useState} from 'react';
+import React, {useEffect, useMemo, useReducer} from 'react';
 import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -37,7 +37,6 @@ const Tab = createMaterialBottomTabNavigator();
 
 function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
-  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const md5 = require('md5');
   const getAuthToken = async () => {
     try {
@@ -64,8 +63,6 @@ function App() {
    * authContext will 'memoize' the functions that will handle the API loic
    * authContext is passed to AuthContext provider so that each screen wrap
    * within in it can access the logic of each funtion.
-   *
-   *
    * */
   const authContext = useMemo(
     () => ({
@@ -83,25 +80,21 @@ function App() {
               'Content-Type': 'application/json',
             },
           });
-          const jsonResponse = await response.json();
-          setFavoriteRecipes(jsonResponse.favoriteRecipes);
-          console.log(jsonResponse.confirmToken);
           if (response.status === 200) {
+            const jsonResponse = await response.json();
+            const token = response.headers.get('Authorization');
             dispatch({
               type: AuthActionTypes.RETRIEVE_USER,
               payload: {
                 email: jsonResponse.email,
                 password: jsonResponse.password,
-                authToken: jsonResponse.confirmToken,
+                authToken: token,
                 isLoading: false,
               },
             });
             // Set authentication token to asyncStorage
             try {
-              await AsyncStorage.setItem(
-                '@authToken',
-                jsonResponse.confirmToken,
-              );
+              await AsyncStorage.setItem('@authToken', token ?? '');
               await AsyncStorage.setItem('@email', jsonResponse.email);
               await AsyncStorage.setItem('@password', jsonResponse.password);
             } catch (e) {
@@ -117,10 +110,10 @@ function App() {
       },
       logOut: () => {},
       email: authState.email,
+      password: authState.password,
       token: authState.authToken,
-      favoriteRecipes: favoriteRecipes,
     }),
-    [authState.authToken, authState.email, favoriteRecipes, md5],
+    [authState.authToken, authState.email, authState.password, md5],
   );
 
   // Used for authentication state persistance
@@ -153,7 +146,6 @@ function App() {
               name="Home"
               component={HomeScreen}
               options={{tabBarIcon: HomeBarIcon}}
-              initialParams={{email: authState.email}}
             />
             <Tab.Screen
               name="Favorites"

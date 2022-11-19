@@ -1,18 +1,10 @@
-import * as React from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {Dimensions, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {colors} from './styles/colors';
 import {PantryScreen} from '../UI/PantryScreen';
-
-function FavScreen() {
-  return (
-    // eslint-disable-next-line react-native/no-inline-styles
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Favorites!</Text>
-    </View>
-  );
-}
+import {FavScreen} from './FavScreen';
 
 const Tab = createMaterialTopTabNavigator();
 

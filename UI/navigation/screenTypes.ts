@@ -3,7 +3,7 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
  * Define the screens that the app will contain
  */
 export type StackParamList = {
-  Home: {email: string};
+  Home: {};
   Signup: {} | undefined;
   Login: {} | undefined;
   Search: {} | undefined;
