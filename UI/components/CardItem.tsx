@@ -24,15 +24,22 @@ type cardItemProps = {
   title: string;
   instructions?: string;
   userEmail?: string;
+  onPressFavorite?: (email: string, title: string) => void;
+  heartBackgroundColor?: ColorValue;
 };
 
 interface heartProps extends TouchableOpacityProps {
   heartBackgroundColor: ColorValue;
   containerStyle?: StyleProp<ViewStyle>;
-  onPress: () => void;
 }
 export const CardItem = (props: cardItemProps) => {
   const [isVisible, setIsVisible] = useState(false);
+
+  const onPressFavorite = (email: string, title: string) => {
+    if (props.onPressFavorite) {
+      props.onPressFavorite(email, title);
+    }
+  };
 
   return (
     <View>
@@ -54,7 +61,7 @@ export const CardItem = (props: cardItemProps) => {
           </View>
           <FavoriteIcon
             heartBackgroundColor={colors.goldenRod}
-            onPress={() => null}
+            onPress={() => onPressFavorite(props.userEmail ?? '', props.title)}
           />
         </ImageBackground>
       </TouchableOpacity>

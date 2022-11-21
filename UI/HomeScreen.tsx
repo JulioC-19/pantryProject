@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
 import {CardItem, ListHeader} from './components/CardItem';
 import {colors} from './styles/colors';
+import {AuthContext} from '../auth/authContext';
 
 export const HomeScreen = () => {
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
   const [latestMeals, setLatestMeals] = useState([]);
+  const {email, token, addToFavorites} = useContext(AuthContext);
 
   const getRandomMeals = async () => {
     try {
@@ -41,7 +43,6 @@ export const HomeScreen = () => {
     getLastestMeals();
   }, []);
 
-  //console.log(JSON.stringify(meals[0]));
   const cardItem = (item: {
     strMealThumb: string;
     strMeal: string;
@@ -52,6 +53,9 @@ export const HomeScreen = () => {
         uri={item.strMealThumb}
         title={item.strMeal}
         instructions={item.strInstructions}
+        onPressFavorite={() =>
+          addToFavorites(email ?? '', item.strMeal, token ?? '')
+        }
       />
     );
   };

@@ -26,6 +26,7 @@ import {
 import {LoadingScreen} from './UI/components/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
+const favoriteURL = 'https://newpantry.herokuapp.com/api/favorites';
 
 /**
  * This navigator stack contains the app's screens.
@@ -109,6 +110,29 @@ function App() {
         }
       },
       logOut: () => {},
+      addToFavorites: async (
+        email: string,
+        favorite: string,
+        token: string,
+      ) => {
+        const body = JSON.stringify({email: email, favorite: favorite});
+        console.log(body, token);
+        try {
+          const response = await fetch(favoriteURL, {
+            method: 'POST',
+            body: body,
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          });
+          console.log(response);
+          const json = await response.json();
+          console.log(json);
+        } catch (error) {
+          console.log(error);
+        }
+      },
       email: authState.email,
       password: authState.password,
       token: authState.authToken,

@@ -4,6 +4,7 @@ import {createContext} from 'react';
 export type AuthContextData = {
   logIn: (email: String, password: String) => void;
   logOut: () => void;
+  addToFavorites: (email: string, favorite: string, token: string) => void;
   email: string | null | undefined;
   password: string | null | undefined;
   token: string | null | undefined;
@@ -15,4 +16,5 @@ export const AuthContext = createContext<AuthContextData>({
   email: '',
   password: '',
   token: '',
+  addToFavorites: (_email: string, _favorite: string, _token: string) => {},
 });
