@@ -57,7 +57,7 @@ const list = [
 
 const IngredientItem = (props: ingredientItem) => {
   return (
-    <View style={{flexDirection: 'row'}} key={props.id}>
+    <View style={styles.ingredientItem} key={props.id}>
       <Icons.Octicons name="dot-fill" color={colors.goldenRod} size={24} />
       <Text key={props.id} style={styles.ingredientText}>
         {props.name}
@@ -68,7 +68,7 @@ const IngredientItem = (props: ingredientItem) => {
 
 const IngredientList = (props: IngredientListProps) => {
   return (
-    <View style={{flexDirection: 'column'}}>
+    <View style={styles.ingredientList}>
       {props.ingredientList.map(item => (
         <IngredientItem id={item.id} name={item.name} />
       ))}
@@ -210,5 +210,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingLeft: 5,
     fontFamily: 'Barlow',
+  },
+  ingredientItem: {
+    flexDirection: 'row',
+  },
+  ingredientList: {
+    flexDirection: 'column',
   },
 });
