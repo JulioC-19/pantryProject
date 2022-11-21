@@ -116,6 +116,7 @@ export const FavScreen = () => {
         onPressFavorite={() =>
           addToFavorites(email ?? '', item.strMeal, token ?? '')
         }
+        isFavorite={true}
       />
     );
   };

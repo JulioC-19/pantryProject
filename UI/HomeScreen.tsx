@@ -1,5 +1,11 @@
-import React, {useEffect, useState, useContext} from 'react';
-import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState, useContext, useCallback} from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {CardItem, ListHeader} from './components/CardItem';
 import {colors} from './styles/colors';
 import {AuthContext} from '../auth/authContext';
@@ -8,6 +14,7 @@ export const HomeScreen = () => {
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
   const [latestMeals, setLatestMeals] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const {email, token, addToFavorites} = useContext(AuthContext);
 
   const getRandomMeals = async () => {
@@ -24,6 +31,10 @@ export const HomeScreen = () => {
     }
   };
 
+  const onRefreshRandomMeals = useCallback(() => {
+    getRandomMeals();
+  }, []);
+
   const getLastestMeals = async () => {
     try {
       const response = await fetch(
@@ -37,6 +48,10 @@ export const HomeScreen = () => {
       setLoading(false);
     }
   };
+
+  const onRefreshLatestMeals = useCallback(() => {
+    getLastestMeals();
+  }, []);
 
   useEffect(() => {
     getRandomMeals();
@@ -79,6 +94,12 @@ export const HomeScreen = () => {
                 return item.idMeal;
               }}
               renderItem={({item}: any) => cardItem(item)}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefreshRandomMeals}
+                />
+              }
             />
           </View>
           <View style={localStyles.listContainer}>
@@ -92,6 +113,12 @@ export const HomeScreen = () => {
                 return item.idMeal;
               }}
               renderItem={({item}: any) => cardItem(item)}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefreshLatestMeals}
+                />
+              }
             />
           </View>
         </>

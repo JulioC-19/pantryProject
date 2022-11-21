@@ -3,6 +3,7 @@ export const colors = {
     darkGray:'#9C9C9C',
     gainsBoro:'#D9D9D9',
     white:'#FFFFFF',
+    red: '#FF0000',
     
     // Main color palet
     fullYellow: '#FABC4F',
