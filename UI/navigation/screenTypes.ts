@@ -4,11 +4,11 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
  */
 export type StackParamList = {
   Home: {};
-  Signup: {};
-  Login: {};
-  Search: {};
-  LoadingScreen: {};
-  PantryScreen: {};
+  Signup: {} | undefined;
+  Login: {} | undefined;
+  Search: {} | undefined;
+  LoadingScreen: {} | undefined;
+  PantryScreen: {} | undefined;
 };
 
 /**
@@ -21,3 +21,4 @@ export type StackParamList = {
  * Trying to navigate to an undefined screen will throw an error.
  */
 export type NavigationProps = NativeStackScreenProps<StackParamList>;
+export type homeRouteProps = NativeStackScreenProps<StackParamList, 'Home'>;

@@ -24,7 +24,9 @@ import {
   ProfileBarIcon,
 } from './UI/components/IconComponents';
 import {LoadingScreen} from './UI/components/LoadingScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
+const favoriteURL = 'https://newpantry.herokuapp.com/api/favorites';
 
 /**
  * This navigator stack contains the app's screens.
@@ -37,13 +39,31 @@ const Tab = createMaterialBottomTabNavigator();
 function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
   const md5 = require('md5');
+  const getAuthToken = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@authToken');
+      const email = await AsyncStorage.getItem('@email');
+      const password = await AsyncStorage.getItem('@password');
+      if (value !== null) {
+        dispatch({
+          type: AuthActionTypes.RETRIEVE_USER,
+          payload: {
+            email: email,
+            password: password,
+            authToken: value,
+            isLoading: false,
+          },
+        });
+      }
+    } catch (e) {
+      console.log('READING ERROR ' + e);
+    }
+  };
 
   /**
    * authContext will 'memoize' the functions that will handle the API loic
    * authContext is passed to AuthContext provider so that each screen wrap
    * within in it can access the logic of each funtion.
-   *
-   *
    * */
   const authContext = useMemo(
     () => ({
@@ -61,18 +81,27 @@ function App() {
               'Content-Type': 'application/json',
             },
           });
-          const jsonResponse = await response.json();
           if (response.status === 200) {
-            const authToken = response.headers.get('authorization');
+            const jsonResponse = await response.json();
+            const token = response.headers.get('Authorization');
             dispatch({
               type: AuthActionTypes.RETRIEVE_USER,
               payload: {
                 email: jsonResponse.email,
                 password: jsonResponse.password,
-                authToken: authToken,
+                authToken: token,
                 isLoading: false,
               },
             });
+            // Set authentication token to asyncStorage
+            try {
+              await AsyncStorage.setItem('@authToken', token ?? '');
+              await AsyncStorage.setItem('@email', jsonResponse.email);
+              await AsyncStorage.setItem('@password', jsonResponse.password);
+            } catch (e) {
+              // saving error
+              console.log('SAVING ERROR ' + e);
+            }
           }
         } catch (error) {
           dispatch({type: AuthActionTypes.FAIL});
@@ -81,18 +110,42 @@ function App() {
         }
       },
       logOut: () => {},
+      addToFavorites: async (
+        email: string,
+        favorite: string,
+        token: string,
+      ) => {
+        const body = JSON.stringify({email: email, favorite: favorite});
+        console.log(body, token);
+        try {
+          const response = await fetch(favoriteURL, {
+            method: 'POST',
+            body: body,
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token,
+            },
+          });
+          console.log(response);
+          const json = await response.json();
+          console.log(json);
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      email: authState.email,
+      password: authState.password,
+      token: authState.authToken,
     }),
-    [md5],
+    [authState.authToken, authState.email, authState.password, md5],
   );
 
   // Used for authentication state persistance
   useEffect(() => {
-    if (authState.authToken) {
-      return;
-    }
+    // Fetch the token from storage then navigate to our appropriate place
+    getAuthToken();
   });
 
-  console.log(authState.isLoading, authState.authToken);
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>

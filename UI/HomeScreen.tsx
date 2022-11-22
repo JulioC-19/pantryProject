@@ -1,12 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, View} from 'react-native';
+import React, {useEffect, useState, useContext, useCallback} from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {CardItem, ListHeader} from './components/CardItem';
 import {colors} from './styles/colors';
+import {AuthContext} from '../auth/authContext';
 
 export const HomeScreen = () => {
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
   const [latestMeals, setLatestMeals] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const {email, token, addToFavorites} = useContext(AuthContext);
 
   const getRandomMeals = async () => {
     try {
@@ -22,6 +31,10 @@ export const HomeScreen = () => {
     }
   };
 
+  const onRefreshRandomMeals = useCallback(() => {
+    getRandomMeals();
+  }, []);
+
   const getLastestMeals = async () => {
     try {
       const response = await fetch(
@@ -36,15 +49,34 @@ export const HomeScreen = () => {
     }
   };
 
+  const onRefreshLatestMeals = useCallback(() => {
+    getLastestMeals();
+  }, []);
+
   useEffect(() => {
     getRandomMeals();
     getLastestMeals();
   }, []);
 
-  //console.log(JSON.stringify(meals[0]));
+  const cardItem = (item: {
+    strMealThumb: string;
+    strMeal: string;
+    strInstructions: string | undefined;
+  }) => {
+    return (
+      <CardItem
+        uri={item.strMealThumb}
+        title={item.strMeal}
+        instructions={item.strInstructions}
+        onPressFavorite={() =>
+          addToFavorites(email ?? '', item.strMeal, token ?? '')
+        }
+      />
+    );
+  };
 
   return (
-    <View style={{flex: 1, padding: 10}}>
+    <View style={localStyles.screenContainer}>
       {isLoading ? (
         <ActivityIndicator />
       ) : (
@@ -58,35 +90,35 @@ export const HomeScreen = () => {
               showsHorizontalScrollIndicator={false}
               data={meals}
               horizontal={true}
-              keyExtractor={(item: any, index) => {
+              keyExtractor={(item: any, _index) => {
                 return item.idMeal;
               }}
-              renderItem={({item}: any) => (
-                <CardItem
-                  uri={item.strMealThumb}
-                  title={item.strMeal}
-                  instructions={item.strInstructions}
+              renderItem={({item}: any) => cardItem(item)}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefreshRandomMeals}
                 />
-              )}
+              }
             />
           </View>
-          <View style={{paddingBottom: 250}}>
+          <View style={localStyles.listContainer}>
             <ListHeader title={'TRENDING'} color={colors.mountainIris} />
             <FlatList
               showsVerticalScrollIndicator={false}
               data={latestMeals.slice(0, 10)}
               numColumns={2}
               horizontal={false}
-              keyExtractor={(item: any, index) => {
+              keyExtractor={(item: any, _index) => {
                 return item.idMeal;
               }}
-              renderItem={({item}: any) => (
-                <CardItem
-                  uri={item.strMealThumb}
-                  title={item.strMeal}
-                  instructions={item.strInstructions}
+              renderItem={({item}: any) => cardItem(item)}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefreshLatestMeals}
                 />
-              )}
+              }
             />
           </View>
         </>
@@ -94,3 +126,10 @@ export const HomeScreen = () => {
     </View>
   );
 };
+
+const localStyles = StyleSheet.create({
+  screenContainer: {flex: 1, padding: 10},
+  listContainer: {
+    paddingBottom: 250,
+  },
+});
