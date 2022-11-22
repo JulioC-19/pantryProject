@@ -139,7 +139,6 @@ export const PantryScreen = ({navigation}: NavigationProps) => {
           renderRightActions={(progress, dragX) =>
             renderRightActions(progress, dragX, onClick)
           }
-          renderLeftActions={() => renderLeftActions()}
           onSwipeableOpen={() => closeRow(index)}
           rightThreshold={10}
           overshootRight={false}

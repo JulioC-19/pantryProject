@@ -4,35 +4,63 @@ import {
   StyleSheet,
   Text,
   View,
+  Modal,
   ScrollView,
   TextInput,
+  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import {NavigationProps} from './navigation/screenTypes';
 import {colors} from './styles/colors';
-import Icon from './styles/icons';
+import Icons from './styles/icons';
 import {CategoryBotton} from './components/CategoryBotton';
+import {CardItem} from './components/CardItem';
 
 export const Search = ({navigation}: NavigationProps) => {
   const [Keyword, setKeyword] = useState('');
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
 
-  const URL = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=';
+  const categoryURL = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=';
+  const ingredientURL = 'https://www.themealdb.com/api/json/v1/1/filter.php?i=';
 
-  function recipePage() {}
-
-  const getCategoryMeals = async (categoryChoice: string) => {
+  const getCategoryMeals = async (category: string, url: string) => {
     try {
-      const response = await fetch(URL + categoryChoice);
-      const jsonMeals = await response.json();
-      setMeals(jsonMeals.meals);
-      console.log(meals);
+      const response = await fetch(url + category);
+      const json = await response.json();
+      //setMeals(jsonResult.meals.slice(0, 10));
+      console.log(category);
+
+      let listMeals: any = [];
+      for (let i = 0; i < 10; i++) {
+        if (json.meals[i] == null) {
+          continue;
+        }
+        try {
+          const response2 = await fetch(
+            `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${json.meals[i].idMeal}`,
+          );
+          const jsonMeals = await response2.json();
+          console.log('midpoint');
+          listMeals.push(jsonMeals.meals[0]);
+        } catch (error) {
+          console.log('Error: ' + error);
+        }
+      }
+      setMeals(listMeals);
+      console.log('final: ' + meals);
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
+      handleModal();
     }
   };
+
+  function handleModal() {
+    setIsModalVisible(() => !isModalVisible);
+  }
 
   return (
     <ScrollView>
@@ -41,13 +69,15 @@ export const Search = ({navigation}: NavigationProps) => {
 
         <View style={localStyles.parentView}>
           <View style={localStyles.inputContainer}>
-            <Icon.Ionicons name="search" style={localStyles.iconStyle} />
+            <Icons.Ionicons name="search" style={localStyles.iconStyle} />
             <TextInput
               style={localStyles.textStyle}
               value={Keyword}
-              onEndEditing={() => {
-                //navigation.navigate('SearchResult', {});
-                Alert.alert('Searching for "' + Keyword + '"');
+              onChangeText={setKeyword}
+              onSubmitEditing={() => {
+                //Alert.alert('Searching for "' + Keyword + '"');
+                //searchIngredients(Keyword);
+                getCategoryMeals(Keyword, ingredientURL);
               }}
             />
           </View>
@@ -59,12 +89,18 @@ export const Search = ({navigation}: NavigationProps) => {
             <CategoryBotton
               title={'Breakfast'}
               backgroundColor={colors.gleeful}
-              onPress={() => getCategoryMeals('Breakfast')}
+              onPress={() => {
+                setKeyword('Breakfast');
+                getCategoryMeals('Breakfast', categoryURL);
+              }}
             />
             <CategoryBotton
               title={'Starter'}
               backgroundColor={colors.fullYellow}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Starter');
+                getCategoryMeals('Starter', categoryURL);
+              }}
             />
           </View>
 
@@ -72,12 +108,18 @@ export const Search = ({navigation}: NavigationProps) => {
             <CategoryBotton
               title={'Side'}
               backgroundColor={colors.goldenRod}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Side');
+                getCategoryMeals('Side', categoryURL);
+              }}
             />
             <CategoryBotton
               title={'Beef'}
               backgroundColor={colors.mandarinRed}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Beef');
+                getCategoryMeals('Beef', categoryURL);
+              }}
             />
           </View>
 
@@ -85,12 +127,18 @@ export const Search = ({navigation}: NavigationProps) => {
             <CategoryBotton
               title={'Chicken'}
               backgroundColor={colors.mandarinRed}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Chicken');
+                getCategoryMeals('Chicken', categoryURL);
+              }}
             />
             <CategoryBotton
               title={'Pork'}
               backgroundColor={colors.mandarinRed}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Pork');
+                getCategoryMeals('Pork', categoryURL);
+              }}
             />
           </View>
 
@@ -98,12 +146,18 @@ export const Search = ({navigation}: NavigationProps) => {
             <CategoryBotton
               title={'Lamb'}
               backgroundColor={colors.mandarinRed}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Lamb');
+                getCategoryMeals('Lamb', categoryURL);
+              }}
             />
             <CategoryBotton
               title={'Goat'}
               backgroundColor={colors.mandarinRed}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Goat');
+                getCategoryMeals('Goat', categoryURL);
+              }}
             />
           </View>
 
@@ -111,12 +165,18 @@ export const Search = ({navigation}: NavigationProps) => {
             <CategoryBotton
               title={'Seafood'}
               backgroundColor={colors.mountainIris}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Seafood');
+                getCategoryMeals('Seafood', categoryURL);
+              }}
             />
             <CategoryBotton
               title={'Miscellaneous'}
               backgroundColor={colors.goldenRod}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Miscellaneous');
+                getCategoryMeals('Miscellaneous', categoryURL);
+              }}
             />
           </View>
 
@@ -124,12 +184,18 @@ export const Search = ({navigation}: NavigationProps) => {
             <CategoryBotton
               title={'Pasta'}
               backgroundColor={colors.goldenRod}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Pasta');
+                getCategoryMeals('Pasta', categoryURL);
+              }}
             />
             <CategoryBotton
               title={'Dessert'}
               backgroundColor={colors.fullYellow}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Dessert');
+                getCategoryMeals('Dessert', categoryURL);
+              }}
             />
           </View>
 
@@ -137,15 +203,73 @@ export const Search = ({navigation}: NavigationProps) => {
             <CategoryBotton
               title={'Vegan'}
               backgroundColor={colors.darkOliveGreen}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Vegan');
+                getCategoryMeals('Vegan', categoryURL);
+              }}
             />
             <CategoryBotton
               title={'Vegetarian'}
               backgroundColor={colors.gleeful}
-              onPress={recipePage}
+              onPress={() => {
+                setKeyword('Vegetarian');
+                getCategoryMeals('Vegetarian', categoryURL);
+              }}
             />
           </View>
         </ScrollView>
+
+        <Modal animationType="slide" visible={isModalVisible}>
+          <View style={localStyles.closeIcon}>
+            <Icons.AntDesign
+              name="arrowleft"
+              color={'black'}
+              size={30}
+              onPress={handleModal}
+            />
+          </View>
+          <View style={localStyles.searchContainer}>
+            <Text style={localStyles.search}>SEARCH RESULT:</Text>
+            <View style={localStyles.parentView}>
+              <View style={localStyles.inputContainer}>
+                <Icons.Ionicons name="search" style={localStyles.iconStyle} />
+                <TextInput
+                  style={localStyles.textStyle}
+                  value={Keyword}
+                  editable={false}
+                  //onChangeText={setKeyword}
+                  onSubmitEditing={() => {
+                    console.log('Searching for "' + Keyword + '"');
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <>
+              <View style={localStyles.resultContainer}>
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  data={meals}
+                  numColumns={2}
+                  horizontal={false}
+                  keyExtractor={(item: any, index) => {
+                    return item.idMeal;
+                  }}
+                  renderItem={({item}: any) => (
+                    <CardItem
+                      uri={item.strMealThumb}
+                      title={item.strMeal}
+                      instructions={item.strInstructions}
+                    />
+                  )}
+                />
+              </View>
+            </>
+          )}
+        </Modal>
       </View>
     </ScrollView>
   );
@@ -153,8 +277,8 @@ export const Search = ({navigation}: NavigationProps) => {
 
 const localStyles = StyleSheet.create({
   container: {
-    marginVertical: '8%',
-    marginHorizontal: '6%',
+    marginVertical: '4%',
+    marginHorizontal: '4%',
   },
   search: {
     marginVertical: '6%',
@@ -204,6 +328,21 @@ const localStyles = StyleSheet.create({
   buttonContainer: {
     marginVertical: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+  },
+
+  closeIcon: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+  },
+  searchContainer: {
+    marginTop: '8%',
+    marginHorizontal: '6%',
+  },
+  resultContainer: {
+    alignItems: 'center',
+    paddingBottom: 200,
+    marginBottom: 8,
   },
 });
