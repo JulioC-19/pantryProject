@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useReducer} from 'react';
-import {StyleSheet, Alert} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
@@ -25,6 +25,8 @@ import {
 } from './UI/components/IconComponents';
 import {LoadingScreen} from './UI/components/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import {toastConfig} from './UI/styles/toastConfig';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 const favoriteURL = 'https://newpantry.herokuapp.com/api/favorites';
 
@@ -39,6 +41,60 @@ const Tab = createMaterialBottomTabNavigator();
 function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
   const md5 = require('md5');
+
+  async function handleResponseStatus(response: Response) {
+    switch (response.status) {
+      case 200:
+        const jsonResponse = await response.json();
+        const token = response.headers.get('Authorization');
+        dispatch({
+          type: AuthActionTypes.RETRIEVE_USER,
+          payload: {
+            email: jsonResponse.email,
+            password: jsonResponse.password,
+            authToken: token,
+            isLoading: false,
+          },
+        });
+        // Set authentication token to asyncStorage
+        try {
+          await AsyncStorage.setItem('@authToken', token ?? '');
+          await AsyncStorage.setItem('@email', jsonResponse.email);
+          await AsyncStorage.setItem('@password', jsonResponse.password);
+        } catch (e) {
+          // saving error
+          console.log('SAVING ERROR ' + e);
+        }
+        Toast.show({
+          type: 'success',
+          text1: 'Login succesful',
+          text2: 'Welcome!',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+        break;
+      case 400:
+        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+        Toast.show({
+          type: 'error',
+          text1: 'Incorrect Input',
+          text2: 'Invalid email or password, please try again',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+        break;
+      case 401:
+        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+        Toast.show({
+          type: 'info',
+          text1: 'User email not verified',
+          text2: 'Please check you email and verify your account',
+          visibilityTime: 4000,
+          autoHide: true,
+        });
+        break;
+    }
+  }
   const getAuthToken = async () => {
     try {
       const value = await AsyncStorage.getItem('@authToken');
@@ -92,36 +148,7 @@ function App() {
               },
             });
             console.log(response);
-            if (response.status === 200) {
-              const jsonResponse = await response.json();
-              const token = response.headers.get('Authorization');
-              dispatch({
-                type: AuthActionTypes.RETRIEVE_USER,
-                payload: {
-                  email: jsonResponse.email,
-                  password: jsonResponse.password,
-                  authToken: token,
-                  isLoading: false,
-                },
-              });
-              // Set authentication token to asyncStorage
-              try {
-                await AsyncStorage.setItem('@authToken', token ?? '');
-                await AsyncStorage.setItem('@email', jsonResponse.email);
-                await AsyncStorage.setItem('@password', jsonResponse.password);
-              } catch (e) {
-                // saving error
-                console.log('SAVING ERROR ' + e);
-              }
-            } else {
-              dispatch({
-                type: AuthActionTypes.FAIL,
-                payload: {isLoading: false},
-              });
-              Alert.alert('Invalid email or password', 'Please try again', [
-                {text: 'OK', onPress: () => console.log('OK Pressed')},
-              ]);
-            }
+            handleResponseStatus(response);
           } catch (error) {
             dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
             // TODO: Implement an alert to the screen
@@ -129,10 +156,13 @@ function App() {
           }
         } else {
           dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-          Alert.alert('Invalid email', 'Please enter a valid email', [
-            {text: 'OK', onPress: () => console.log('OK Pressed')},
-          ]);
-          console.log('Wrong email format');
+          Toast.show({
+            type: 'info',
+            text1: 'Invalid input',
+            text2: 'Please enter a valid email',
+            visibilityTime: 4000,
+            autoHide: true,
+          });
         }
       },
       logOut: () => {},
@@ -210,6 +240,7 @@ function App() {
           </Tab.Navigator>
         )}
       </NavigationContainer>
+      <Toast config={toastConfig} />
     </AuthContext.Provider>
   );
 }
