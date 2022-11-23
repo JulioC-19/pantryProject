@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useReducer} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Signup} from './UI/Signup';
@@ -60,6 +60,13 @@ function App() {
     }
   };
 
+  const validate = (email: String) => {
+    // eslint-disable-next-line no-useless-escape
+    const expression = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    return expression.test(String(email).toLowerCase());
+  };
+
   /**
    * authContext will 'memoize' the functions that will handle the API loic
    * authContext is passed to AuthContext provider so that each screen wrap
@@ -69,44 +76,63 @@ function App() {
     () => ({
       logIn: async (email: String, password: String) => {
         dispatch({type: AuthActionTypes.LOGIN, payload: {isLoading: true}});
-        try {
-          console.log(email, password);
-          const response = await fetch(loginAPI, {
-            method: 'POST',
-            body: JSON.stringify({
-              email: email,
-              password: md5(password),
-            }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          if (response.status === 200) {
-            const jsonResponse = await response.json();
-            const token = response.headers.get('Authorization');
-            dispatch({
-              type: AuthActionTypes.RETRIEVE_USER,
-              payload: {
-                email: jsonResponse.email,
-                password: jsonResponse.password,
-                authToken: token,
-                isLoading: false,
+        const validateEmail = validate(email);
+        console.log(validateEmail);
+        if (validateEmail) {
+          try {
+            console.log(email, password);
+            const response = await fetch(loginAPI, {
+              method: 'POST',
+              body: JSON.stringify({
+                email: email,
+                password: md5(password),
+              }),
+              headers: {
+                'Content-Type': 'application/json',
               },
             });
-            // Set authentication token to asyncStorage
-            try {
-              await AsyncStorage.setItem('@authToken', token ?? '');
-              await AsyncStorage.setItem('@email', jsonResponse.email);
-              await AsyncStorage.setItem('@password', jsonResponse.password);
-            } catch (e) {
-              // saving error
-              console.log('SAVING ERROR ' + e);
+            console.log(response);
+            if (response.status === 200) {
+              const jsonResponse = await response.json();
+              const token = response.headers.get('Authorization');
+              dispatch({
+                type: AuthActionTypes.RETRIEVE_USER,
+                payload: {
+                  email: jsonResponse.email,
+                  password: jsonResponse.password,
+                  authToken: token,
+                  isLoading: false,
+                },
+              });
+              // Set authentication token to asyncStorage
+              try {
+                await AsyncStorage.setItem('@authToken', token ?? '');
+                await AsyncStorage.setItem('@email', jsonResponse.email);
+                await AsyncStorage.setItem('@password', jsonResponse.password);
+              } catch (e) {
+                // saving error
+                console.log('SAVING ERROR ' + e);
+              }
+            } else {
+              dispatch({
+                type: AuthActionTypes.FAIL,
+                payload: {isLoading: false},
+              });
+              Alert.alert('Invalid email or password', 'Please try again', [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ]);
             }
+          } catch (error) {
+            dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+            // TODO: Implement an alert to the screen
+            console.log(error);
           }
-        } catch (error) {
-          dispatch({type: AuthActionTypes.FAIL});
-          // TODO: Implement an alert to the screen
-          console.log(error);
+        } else {
+          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+          Alert.alert('Invalid email', 'Please enter a valid email', [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
+          console.log('Wrong email format');
         }
       },
       logOut: () => {},
@@ -149,7 +175,7 @@ function App() {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {authState.isLoading ? (
+        {authState.isLoading === true ? (
           <LoadingScreen message={'Loading...'} />
         ) : authState.authToken === null ? (
           <Stack.Navigator

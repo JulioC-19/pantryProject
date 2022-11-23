@@ -6,6 +6,7 @@ import {CardItem} from './components/CardItem';
 import {LoadingScreen} from './components/LoadingScreen';
 
 const URL = 'https://newpantry.herokuapp.com/api/favorites';
+
 export const FavScreen = () => {
   const [meals, setFavMeals] = useState([]);
   const [isLoading, setLoading] = useState(true);
@@ -121,7 +122,6 @@ export const FavScreen = () => {
     );
   };
 
-  // TODO: Implement a onRefresh to update favorite recipies
   return (
     <View style={localStyles.loading}>
       {isLoading === true && (
