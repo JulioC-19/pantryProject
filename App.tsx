@@ -69,7 +69,7 @@ function App() {
           type: 'success',
           text1: 'Login succesful',
           text2: 'Welcome!',
-          visibilityTime: 4000,
+          visibilityTime: 2000,
           autoHide: true,
         });
         break;
@@ -79,7 +79,7 @@ function App() {
           type: 'error',
           text1: 'Incorrect Input',
           text2: 'Invalid email or password, please try again',
-          visibilityTime: 4000,
+          visibilityTime: 6000,
           autoHide: true,
         });
         break;
@@ -87,9 +87,9 @@ function App() {
         dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
         Toast.show({
           type: 'info',
-          text1: 'User email not verified',
+          text1: 'User not verified',
           text2: 'Please check you email and verify your account',
-          visibilityTime: 4000,
+          visibilityTime: 8000,
           autoHide: true,
         });
         break;
