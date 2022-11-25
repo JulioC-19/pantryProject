@@ -18,6 +18,7 @@ import {CardItem} from './components/CardItem';
 
 export const Search = ({navigation}: NavigationProps) => {
   const [Keyword, setKeyword] = useState('');
+  const [Ingredient, setIngredient] = useState('');
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
@@ -29,7 +30,6 @@ export const Search = ({navigation}: NavigationProps) => {
     try {
       const response = await fetch(url + category);
       const json = await response.json();
-      //setMeals(jsonResult.meals.slice(0, 10));
       console.log(category);
 
       let listMeals: any = [];
@@ -72,12 +72,11 @@ export const Search = ({navigation}: NavigationProps) => {
             <Icons.Ionicons name="search" style={localStyles.iconStyle} />
             <TextInput
               style={localStyles.textStyle}
-              value={Keyword}
-              onChangeText={setKeyword}
+              value={Ingredient}
+              onChangeText={setIngredient}
               onSubmitEditing={() => {
-                //Alert.alert('Searching for "' + Keyword + '"');
-                //searchIngredients(Keyword);
-                getCategoryMeals(Keyword, ingredientURL);
+                setKeyword(Ingredient);
+                getCategoryMeals(Ingredient, ingredientURL);
               }}
             />
           </View>
@@ -229,21 +228,9 @@ export const Search = ({navigation}: NavigationProps) => {
             />
           </View>
           <View style={localStyles.searchContainer}>
-            <Text style={localStyles.search}>SEARCH RESULT:</Text>
-            <View style={localStyles.parentView}>
-              <View style={localStyles.inputContainer}>
-                <Icons.Ionicons name="search" style={localStyles.iconStyle} />
-                <TextInput
-                  style={localStyles.textStyle}
-                  value={Keyword}
-                  editable={false}
-                  //onChangeText={setKeyword}
-                  onSubmitEditing={() => {
-                    console.log('Searching for "' + Keyword + '"');
-                  }}
-                />
-              </View>
-            </View>
+            <Text style={localStyles.search}>
+              Search result: {Keyword.toUpperCase()}
+            </Text>
           </View>
           {isLoading ? (
             <ActivityIndicator />
@@ -342,7 +329,7 @@ const localStyles = StyleSheet.create({
   },
   resultContainer: {
     alignItems: 'center',
-    paddingBottom: 200,
-    marginBottom: 8,
+    paddingBottom: 100,
+    marginBottom: 4,
   },
 });

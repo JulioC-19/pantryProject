@@ -67,7 +67,6 @@ const tempDateToDelete = [
 
 export const PantryScreen = ({navigation}: NavigationProps) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
-  const [isEditVisible, setIsEditVisible] = React.useState(false);
   const [Ingredient, setIngredient] = useState('');
   const [listData, setListData] = useState(tempDateToDelete);
 
@@ -84,17 +83,6 @@ export const PantryScreen = ({navigation}: NavigationProps) => {
     } else {
       console.log(Ingredient + ' is added.');
       setIsModalVisible(() => !isModalVisible);
-    }
-  }
-  function showEdit() {
-    setIsEditVisible(() => !isEditVisible);
-  }
-  function editPantryItem() {
-    if (!Ingredient) {
-      console.log('no user input for addPantryItem');
-    } else {
-      console.log('Ingredient edit: ' + Ingredient);
-      setIsEditVisible(() => !isEditVisible);
     }
   }
 
@@ -122,13 +110,6 @@ export const PantryScreen = ({navigation}: NavigationProps) => {
       return (
         <View style={localStyles.sideButton}>
           <Button color={colors.mandarinRed} onPress={onClick} title="DELETE" />
-        </View>
-      );
-    };
-    const renderLeftActions = () => {
-      return (
-        <View style={localStyles.sideButton}>
-          <Button color={colors.mountainIris} onPress={showEdit} title="EDIT" />
         </View>
       );
     };
@@ -206,33 +187,6 @@ export const PantryScreen = ({navigation}: NavigationProps) => {
           </View>
         </Modal>
 
-        {/* Edit ingredient pop window */}
-        <Modal animationType="fade" visible={isEditVisible} transparent>
-          <View style={localStyles.centeredView}>
-            <View style={localStyles.modalView}>
-              <Text style={localStyles.text}>Edit Ingredient</Text>
-              <View style={localStyles.inputContainer}>
-                <TextInput
-                  value={Ingredient}
-                  onChangeText={ingredient => setIngredient(ingredient)}
-                />
-              </View>
-              <View style={localStyles.buttonContainer}>
-                <Button
-                  title="Edit"
-                  color={colors.fullYellow}
-                  onPress={editPantryItem}
-                />
-                <Button
-                  title="Cancel"
-                  color={colors.gainsBoro}
-                  onPress={() => setIsEditVisible(() => !isEditVisible)}
-                />
-              </View>
-            </View>
-          </View>
-        </Modal>
-
         <View style={localStyles.itemContainer}>
           <FlatList
             data={listData}
@@ -252,28 +206,17 @@ export const PantryScreen = ({navigation}: NavigationProps) => {
 
 const localStyles = StyleSheet.create({
   container: {
-    marginVertical: 15,
-    marginHorizontal: 24,
+    marginVertical: 12,
+    marginHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-
-  switch: {
-    width: 250,
-    height: 50,
-    marginTop: '15%',
-    marginBottom: '6%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.gleeful,
-    borderRadius: 50,
   },
 
   pantryBox: {
     backgroundColor: colors.gainsBoro,
     borderRadius: 20,
     width: '100%',
-    height: 440,
+    height: '100%',
   },
 
   buttonBox: {
@@ -302,8 +245,7 @@ const localStyles = StyleSheet.create({
 
   itemContainer: {
     maxHeight: '80%',
-    width: 320,
-    maxWidth: '100%',
+    width: '90%',
     alignSelf: 'center',
     color: colors.fullYellow,
   },
@@ -320,7 +262,7 @@ const localStyles = StyleSheet.create({
     color: colors.darkOliveGreen,
   },
 
-  //Side Delete/Edit button
+  //Side Delete button
   sideButton: {
     alignContent: 'center',
     justifyContent: 'center',
