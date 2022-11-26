@@ -136,7 +136,6 @@ function App() {
         console.log(validateEmail);
         if (validateEmail) {
           try {
-            console.log(email, password);
             const response = await fetch(loginAPI, {
               method: 'POST',
               body: JSON.stringify({
@@ -171,7 +170,6 @@ function App() {
         token: string,
       ) => {
         const body = JSON.stringify({email: email, favorite: favorite});
-        console.log(body, token);
         try {
           const response = await fetch(favoriteURL, {
             method: 'POST',
@@ -181,7 +179,6 @@ function App() {
               Authorization: token,
             },
           });
-          console.log(response);
           const json = await response.json();
           console.log(json);
         } catch (error) {

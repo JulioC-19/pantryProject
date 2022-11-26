@@ -4,6 +4,7 @@ import {AuthContext} from '../auth/authContext';
 import {useContext, useEffect, useState} from 'react';
 import {CardItem} from './components/CardItem';
 import {LoadingScreen} from './components/LoadingScreen';
+import {getIngredientList, mealWithIngredients} from './HomeScreen';
 
 const URL = 'https://newpantry.herokuapp.com/api/favorites';
 
@@ -12,6 +13,9 @@ export const FavScreen = () => {
   const [isLoading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const {email, token, addToFavorites} = useContext(AuthContext);
+  const [mealsIngredients, setMealsIngredients] = useState<mealWithIngredients>(
+    {},
+  );
 
   /**
    * This effects triggers the first time user navigates to the screen
@@ -48,6 +52,8 @@ export const FavScreen = () => {
           }
         }
         setFavMeals(favMeals);
+        let ingredientList = getIngredientList(favMeals);
+        setMealsIngredients(ingredientList);
       } catch (error) {
         console.log('ERROR: ' + error);
       } finally {
@@ -103,8 +109,8 @@ export const FavScreen = () => {
     getFavMeals();
   }, [email, token]);
 
-  console.log(meals);
   const cardItem = (item: {
+    idMeal: any;
     strMealThumb: string;
     strMeal: string;
     strInstructions: string | undefined;
@@ -113,6 +119,7 @@ export const FavScreen = () => {
       <CardItem
         uri={item.strMealThumb}
         title={item.strMeal}
+        ingredientList={mealsIngredients[item.idMeal]}
         instructions={item.strInstructions}
         onPressFavorite={() =>
           addToFavorites(email ?? '', item.strMeal, token ?? '')

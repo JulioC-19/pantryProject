@@ -11,10 +11,18 @@ import {colors} from './styles/colors';
 import {AuthContext} from '../auth/authContext';
 import {ingredientItem} from './RecipeScreen';
 
+const URL = 'https://newpantry.herokuapp.com/api/favorites';
+
 export type mealWithIngredients = {
   [idMeal: string]: ingredientItem[];
 };
 
+/**
+ * Takes in a list of objects meals and return a list of object ingredients
+ * Each ingredients has an index, this is necessary for the fatlist
+ * @param meals
+ * @returns
+ */
 export const getIngredientList = (meals: any) => {
   let mealsIngredientsTemp: mealWithIngredients = {};
   let ingredientList: ingredientItem[] = [];
@@ -44,6 +52,7 @@ export const HomeScreen = () => {
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
   const [latestMeals, setLatestMeals] = useState([]);
+  const [favMeals, setFavMeals] = useState<string[]>([]);
   const [mealsIngredients, setMealsIngredients] = useState<mealWithIngredients>(
     {},
   );
@@ -84,17 +93,74 @@ export const HomeScreen = () => {
   };
 
   useEffect(() => {
+    const getUserFavRecipies = async () => {
+      try {
+        const body = JSON.stringify({email: email});
+        const response = await fetch(URL, {
+          credentials: 'include',
+          method: 'POST',
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token ?? '',
+          },
+        });
+        const json = await response.json();
+        setFavMeals(json);
+      } catch (error) {
+        console.log('ERROR: ' + error);
+      }
+    };
     getRandomMeals();
     getLastestMeals();
-  }, []);
+    getUserFavRecipies();
+  }, [email, token]);
 
   const onRefreshRandomMeals = useCallback(() => {
+    const getUserFavRecipies = async () => {
+      try {
+        const body = JSON.stringify({email: email});
+        const response = await fetch(URL, {
+          credentials: 'include',
+          method: 'POST',
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token ?? '',
+          },
+        });
+        const json = await response.json();
+        setFavMeals(json);
+      } catch (error) {
+        console.log('ERROR: ' + error);
+      }
+    };
     getRandomMeals();
-  }, []);
+    getUserFavRecipies();
+  }, [email, token]);
 
   const onRefreshLatestMeals = useCallback(() => {
+    const getUserFavRecipies = async () => {
+      try {
+        const body = JSON.stringify({email: email});
+        const response = await fetch(URL, {
+          credentials: 'include',
+          method: 'POST',
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token ?? '',
+          },
+        });
+        const json = await response.json();
+        setFavMeals(json);
+      } catch (error) {
+        console.log('ERROR: ' + error);
+      }
+    };
     getLastestMeals();
-  }, []);
+    getUserFavRecipies();
+  }, [email, token]);
 
   const cardItemSeasonal = (item: {
     strMealThumb: string;
@@ -111,6 +177,7 @@ export const HomeScreen = () => {
         onPressFavorite={() =>
           addToFavorites(email ?? '', item.strMeal, token ?? '')
         }
+        isFavorite={favMeals.includes(item.strMeal)}
       />
     );
   };
@@ -130,6 +197,7 @@ export const HomeScreen = () => {
         onPressFavorite={() =>
           addToFavorites(email ?? '', item.strMeal, token ?? '')
         }
+        isFavorite={favMeals.includes(item.strMeal)}
       />
     );
   };
