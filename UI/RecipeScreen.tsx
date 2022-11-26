@@ -19,6 +19,7 @@ export type ingredientItem = {
 };
 
 type ingredientList = {
+  key?: string;
   ingredientList?: ingredientItem[];
 };
 
@@ -46,7 +47,7 @@ const IngredientList = (props: ingredientList) => {
   return (
     <View style={styles.ingredientList}>
       {props.ingredientList?.map(item => (
-        <IngredientItem id={item.id} name={item.name} />
+        <IngredientItem id={item.id} name={item.name} key={item.id} />
       ))}
     </View>
   );
@@ -60,7 +61,6 @@ const Ingredients = (props: {
     <View style={props.containerStyle}>
       <Text style={styles.header}>INGREDIENTS</Text>
       <View style={styles.container}>
-        {/*TODO: This list needs to be sliced in half*/}
         <IngredientList ingredientList={props.list} />
       </View>
     </View>
