@@ -147,7 +147,6 @@ function App() {
                 'Content-Type': 'application/json',
               },
             });
-            console.log(response);
             handleResponseStatus(response);
           } catch (error) {
             dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});

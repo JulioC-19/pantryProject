@@ -13,8 +13,8 @@ export type AuthContextData = {
 export const AuthContext = createContext<AuthContextData>({
   logIn: (_userName: String, _password: String) => {},
   logOut: () => {},
+  addToFavorites: (_email: string, _favorite: string, _token: string) => {},
   email: '',
   password: '',
   token: '',
-  addToFavorites: (_email: string, _favorite: string, _token: string) => {},
 });
