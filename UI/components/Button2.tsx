@@ -6,12 +6,18 @@ import {colors} from '../styles/colors';
 type Props = {
   title: String;
   onPress: () => void;
+  disable?: boolean;
 };
 
-export const Button2 = ({title, onPress}: Props) => {
+export const Button2 = ({title, onPress, disable}: Props) => {
   return (
     <View style={buttonStyles.buttonContainer}>
-      <TouchableOpacity onPress={onPress} style={buttonStyles.button}>
+      <TouchableOpacity
+        onPress={onPress}
+        style={
+          disable === true ? buttonStyles.buttonDisable : buttonStyles.button
+        }
+        disabled={disable}>
         <Text style={buttonStyles.buttonText}>{title}</Text>
       </TouchableOpacity>
     </View>
@@ -31,6 +37,15 @@ const buttonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 17,
+  },
+  buttonDisable: {
+    flexDirection: 'row',
+    height: 43,
+    backgroundColor: colors.fullYellow,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 17,
+    opacity: 0.5,
   },
   buttonText: {
     fontFamily: 'Barlow',

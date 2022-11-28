@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   View,
@@ -10,18 +9,21 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import {NavigationProps} from './navigation/screenTypes';
 import {colors} from './styles/colors';
 import Icons from './styles/icons';
 import {CategoryBotton} from './components/CategoryBotton';
 import {CardItem} from './components/CardItem';
+import {mealWithIngredients, getIngredientList} from './HomeScreen';
 
-export const Search = ({navigation}: NavigationProps) => {
+export const Search = () => {
   const [Keyword, setKeyword] = useState('');
   const [Ingredient, setIngredient] = useState('');
   const [isLoading, setLoading] = useState(true);
   const [meals, setMeals] = useState([]);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const [mealsIngredients, setMealsIngredients] = useState<mealWithIngredients>(
+    {},
+  );
 
   const categoryURL = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=';
   const ingredientURL = 'https://www.themealdb.com/api/json/v1/1/filter.php?i=';
@@ -34,7 +36,7 @@ export const Search = ({navigation}: NavigationProps) => {
 
       let listMeals: any = [];
       for (let i = 0; i < 10; i++) {
-        if (json.meals[i] == null) {
+        if (json.meals[i] === null) {
           continue;
         }
         try {
@@ -49,6 +51,8 @@ export const Search = ({navigation}: NavigationProps) => {
         }
       }
       setMeals(listMeals);
+      let ingredientList = getIngredientList(listMeals);
+      setMealsIngredients(ingredientList);
       console.log('final: ' + meals);
     } catch (error) {
       console.log(error);
@@ -242,7 +246,7 @@ export const Search = ({navigation}: NavigationProps) => {
                   data={meals}
                   numColumns={2}
                   horizontal={false}
-                  keyExtractor={(item: any, index) => {
+                  keyExtractor={(item: any, _index) => {
                     return item.idMeal;
                   }}
                   renderItem={({item}: any) => (
@@ -250,6 +254,7 @@ export const Search = ({navigation}: NavigationProps) => {
                       uri={item.strMealThumb}
                       title={item.strMeal}
                       instructions={item.strInstructions}
+                      ingredientList={mealsIngredients[item.idMeal]}
                     />
                   )}
                 />
