@@ -10,6 +10,9 @@ export type AuthState = {
   password?: string | null;
   authToken?: string | null;
   isLoading?: boolean;
+  firstName?: string | null;
+  lastName?: string | null;
+  profilePicture?: string | null;
 };
 
 export const initAuthState: AuthState = {
@@ -17,6 +20,9 @@ export const initAuthState: AuthState = {
   password: '',
   authToken: null,
   isLoading: false,
+  firstName: '',
+  lastName: '',
+  profilePicture: '',
 };
 /**
  * Takes in a payload what will contain the necessary data for
@@ -45,6 +51,9 @@ export function authStateReducer(
         password: action.payload?.password,
         authToken: action.payload?.authToken,
         isLoading: false,
+        firstName: action.payload?.firstName,
+        lastName: action.payload?.lastName,
+        profilePicture: action.payload?.profilePicture,
       };
     // Clear the user token, email and password
     case AuthActionTypes.FAIL:
@@ -54,6 +63,9 @@ export function authStateReducer(
         password: '',
         authToken: null,
         isLoading: false,
+        firstName: '',
+        lastName: '',
+        profilePicture: '',
       };
   }
 }

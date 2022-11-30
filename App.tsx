@@ -44,6 +44,9 @@ function App() {
       const value = await AsyncStorage.getItem('@authToken');
       const email = await AsyncStorage.getItem('@email');
       const password = await AsyncStorage.getItem('@password');
+      const firstName = await AsyncStorage.getItem('@firstName');
+      const lastName = await AsyncStorage.getItem('@lastName');
+      const profilePicture = await AsyncStorage.getItem('@profilePicture');
       if (value !== null) {
         dispatch({
           type: AuthActionTypes.RETRIEVE_USER,
@@ -52,6 +55,9 @@ function App() {
             password: password,
             authToken: value,
             isLoading: false,
+            firstName: firstName,
+            lastName: lastName,
+            profilePicture: profilePicture,
           },
         });
       }
@@ -67,7 +73,8 @@ function App() {
    * */
   const authContext = useMemo(
     () => ({
-      logIn: async (email: String, password: String) => {
+      logIn: async (email: string, password: string) => {
+        // log in
         dispatch({type: AuthActionTypes.LOGIN, payload: {isLoading: true}});
         try {
           console.log(email, password);
@@ -88,20 +95,39 @@ function App() {
               type: AuthActionTypes.RETRIEVE_USER,
               payload: {
                 email: jsonResponse.email,
-                password: jsonResponse.password,
+                password: password,
                 authToken: token,
                 isLoading: false,
+                firstName: jsonResponse.firstName,
+                lastName: jsonResponse.lastName,
+                profilePicture: jsonResponse.profilePicture,
               },
             });
             // Set authentication token to asyncStorage
             try {
               await AsyncStorage.setItem('@authToken', token ?? '');
               await AsyncStorage.setItem('@email', jsonResponse.email);
-              await AsyncStorage.setItem('@password', jsonResponse.password);
+              await AsyncStorage.setItem('@password', password);
+              await AsyncStorage.setItem('@firstName', jsonResponse.firstName);
+              await AsyncStorage.setItem('@lastName', jsonResponse.lastName);
+              await AsyncStorage.setItem(
+                '@profilePicture',
+                jsonResponse.profilePicture,
+              );
             } catch (e) {
               // saving error
               console.log('SAVING ERROR ' + e);
             }
+          } else {
+            if (response.status === 400) {
+              console.log('Invalid email or password');
+            } else if (response.status === 401) {
+              console.log('User email not verified');
+            }
+            dispatch({
+              type: AuthActionTypes.LOGIN,
+              payload: {isLoading: false},
+            });
           }
         } catch (error) {
           dispatch({type: AuthActionTypes.FAIL});
@@ -109,7 +135,23 @@ function App() {
           console.log(error);
         }
       },
-      logOut: () => {},
+      logOut: async () => {
+        try {
+          await AsyncStorage.removeItem('@email');
+          await AsyncStorage.removeItem('@password');
+          await AsyncStorage.removeItem('@authToken');
+          await AsyncStorage.removeItem('@firstName');
+          await AsyncStorage.removeItem('@lastName');
+          await AsyncStorage.removeItem('@profilePicture');
+          console.log('LOGOUT Successful');
+        } catch {
+          console.log('LOGOUT ERROR');
+        }
+        dispatch({
+          type: AuthActionTypes.SIGNOUT,
+          payload: {},
+        });
+      },
       addToFavorites: async (
         email: string,
         favorite: string,
@@ -136,8 +178,19 @@ function App() {
       email: authState.email,
       password: authState.password,
       token: authState.authToken,
+      firstName: authState.firstName,
+      lastName: authState.lastName,
+      profilePicture: authState.profilePicture,
     }),
-    [authState.authToken, authState.email, authState.password, md5],
+    [
+      authState.authToken,
+      authState.email,
+      authState.firstName,
+      authState.lastName,
+      authState.password,
+      authState.profilePicture,
+      md5,
+    ],
   );
 
   // Used for authentication state persistance
