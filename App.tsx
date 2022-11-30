@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useReducer} from 'react';
+import React, {useCallback, useEffect, useMemo, useReducer} from 'react';
 import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -42,64 +42,80 @@ function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
   const md5 = require('md5');
 
-  async function handleResponseStatus(response: Response) {
-    switch (response.status) {
-      case 200:
-        const jsonResponse = await response.json();
-        const token = response.headers.get('Authorization');
-        dispatch({
-          type: AuthActionTypes.RETRIEVE_USER,
-          payload: {
-            email: jsonResponse.email,
-            password: jsonResponse.password,
-            authToken: token,
-            isLoading: false,
-          },
-        });
-        // Set authentication token to asyncStorage
-        try {
-          await AsyncStorage.setItem('@authToken', token ?? '');
-          await AsyncStorage.setItem('@email', jsonResponse.email);
-          await AsyncStorage.setItem('@password', jsonResponse.password);
-        } catch (e) {
-          // saving error
-          console.log('SAVING ERROR ' + e);
-        }
-        Toast.show({
-          type: 'success',
-          text1: 'Login succesful',
-          text2: 'Welcome!',
-          visibilityTime: 2000,
-          autoHide: true,
-        });
-        break;
-      case 400:
-        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-        Toast.show({
-          type: 'error',
-          text1: 'Incorrect Input',
-          text2: 'Invalid email or password, please try again',
-          visibilityTime: 6000,
-          autoHide: true,
-        });
-        break;
-      case 401:
-        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-        Toast.show({
-          type: 'info',
-          text1: 'User not verified',
-          text2: 'Please check you email and verify your account',
-          visibilityTime: 8000,
-          autoHide: true,
-        });
-        break;
-    }
-  }
+  const handleLoginResponse = useCallback(
+    async (response: Response) => {
+      switch (response.status) {
+        case 200:
+          const jsonResponse = await response.json();
+          const token = response.headers.get('Authorization');
+          dispatch({
+            type: AuthActionTypes.RETRIEVE_USER,
+            payload: {
+              email: jsonResponse.email,
+              password: jsonResponse.password,
+              authToken: token,
+              isLoading: false,
+              firstName: authState.firstName,
+              lastName: authState.lastName,
+              profilePicture: authState.profilePicture,
+            },
+          });
+          // Set authentication token to asyncStorage
+          try {
+            await AsyncStorage.setItem('@authToken', token ?? '');
+            await AsyncStorage.setItem('@email', jsonResponse.email);
+            await AsyncStorage.setItem('@password', jsonResponse.password);
+            await AsyncStorage.setItem('@firstName', jsonResponse.firstName);
+            await AsyncStorage.setItem('@lastName', jsonResponse.lastName);
+            await AsyncStorage.setItem(
+              '@profilePicture',
+              jsonResponse.profilePicture,
+            );
+          } catch (e) {
+            // saving error
+            console.log('SAVING ERROR ' + e);
+          }
+          Toast.show({
+            type: 'success',
+            text1: 'Login succesful',
+            text2: 'Welcome!',
+            visibilityTime: 2000,
+            autoHide: true,
+          });
+          break;
+        case 400:
+          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+          Toast.show({
+            type: 'error',
+            text1: 'Incorrect Input',
+            text2: 'Invalid email or password, please try again',
+            visibilityTime: 6000,
+            autoHide: true,
+          });
+          break;
+        case 401:
+          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+          Toast.show({
+            type: 'info',
+            text1: 'User not verified',
+            text2: 'Please check you email and verify your account',
+            visibilityTime: 8000,
+            autoHide: true,
+          });
+          break;
+      }
+    },
+    [authState.firstName, authState.lastName, authState.profilePicture],
+  );
+
   const getAuthToken = async () => {
     try {
       const value = await AsyncStorage.getItem('@authToken');
       const email = await AsyncStorage.getItem('@email');
       const password = await AsyncStorage.getItem('@password');
+      const firstName = await AsyncStorage.getItem('@firstName');
+      const lastName = await AsyncStorage.getItem('@lastName');
+      const profilePicture = await AsyncStorage.getItem('@profilePicture');
       if (value !== null) {
         dispatch({
           type: AuthActionTypes.RETRIEVE_USER,
@@ -108,6 +124,9 @@ function App() {
             password: password,
             authToken: value,
             isLoading: false,
+            firstName: firstName,
+            lastName: lastName,
+            profilePicture: profilePicture,
           },
         });
       }
@@ -130,7 +149,8 @@ function App() {
    * */
   const authContext = useMemo(
     () => ({
-      logIn: async (email: String, password: String) => {
+      logIn: async (email: string, password: string) => {
+        // log in
         dispatch({type: AuthActionTypes.LOGIN, payload: {isLoading: true}});
         const validateEmail = validate(email);
         console.log(validateEmail);
@@ -146,7 +166,7 @@ function App() {
                 'Content-Type': 'application/json',
               },
             });
-            handleResponseStatus(response);
+            handleLoginResponse(response);
           } catch (error) {
             dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
             // TODO: Implement an alert to the screen
@@ -163,7 +183,23 @@ function App() {
           });
         }
       },
-      logOut: () => {},
+      logOut: async () => {
+        try {
+          await AsyncStorage.removeItem('@email');
+          await AsyncStorage.removeItem('@password');
+          await AsyncStorage.removeItem('@authToken');
+          await AsyncStorage.removeItem('@firstName');
+          await AsyncStorage.removeItem('@lastName');
+          await AsyncStorage.removeItem('@profilePicture');
+          console.log('LOGOUT Successful');
+        } catch {
+          console.log('LOGOUT ERROR');
+        }
+        dispatch({
+          type: AuthActionTypes.SIGNOUT,
+          payload: {},
+        });
+      },
       addToFavorites: async (
         email: string,
         favorite: string,
@@ -188,8 +224,20 @@ function App() {
       email: authState.email,
       password: authState.password,
       token: authState.authToken,
+      firstName: authState.firstName,
+      lastName: authState.lastName,
+      profilePicture: authState.profilePicture,
     }),
-    [authState.authToken, authState.email, authState.password, md5],
+    [
+      authState.authToken,
+      authState.email,
+      authState.firstName,
+      authState.lastName,
+      authState.password,
+      authState.profilePicture,
+      handleLoginResponse,
+      md5,
+    ],
   );
 
   // Used for authentication state persistance

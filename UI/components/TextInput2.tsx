@@ -14,6 +14,7 @@ interface Props extends TextInputProps {
   isPasswordField?: boolean;
   isValidInput?: boolean;
   inputType?: string;
+  isEditable?: boolean;
 }
 
 export const TextInput2 = (props: Props) => {
@@ -36,6 +37,7 @@ export const TextInput2 = (props: Props) => {
               : inputStyle.textStyle
           }
           autoCorrect={false}
+          editable={props.isEditable}
           {...props}
         />
         {props.isPasswordField && (
@@ -108,7 +110,9 @@ const inputStyle = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'normal',
     flex: 1,
-    color: 'blackem',
+    color: '#797979',
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   textStyleInValid: {
     fontFamily: 'Barlow',

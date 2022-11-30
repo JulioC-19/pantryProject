@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,6 +12,7 @@ import {NavigationProps} from './navigation/screenTypes';
 import {TextInput2} from './components/TextInput2';
 import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
+import Toast from 'react-native-toast-message';
 const signupAPI = 'https://newpantry.herokuapp.com/api/signup';
 
 export const Signup = ({navigation}: NavigationProps) => {
@@ -86,6 +87,66 @@ export const Signup = ({navigation}: NavigationProps) => {
       validateMatchingPasswords()
     );
   };
+
+  const handleSignUpResponse = useCallback(async (response: Response) => {
+    switch (response.status) {
+      case 200:
+        Toast.show({
+          type: 'success',
+          text1: 'User created!',
+          text2: 'Please check your email to verify account',
+          visibilityTime: 2000,
+          autoHide: true,
+        });
+        break;
+      case 400:
+        Toast.show({
+          type: 'error',
+          text1: 'Bad request',
+          text2: 'Request could not be process, check your inputs',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      case 404:
+        Toast.show({
+          type: 'error',
+          text1: 'Bad request',
+          text2: 'Could not check if duplicate user',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      case 409:
+        Toast.show({
+          type: 'info',
+          text1: 'User already exist',
+          text2: 'Please enter new information',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      case 500:
+        Toast.show({
+          type: 'error',
+          text1: 'Unexpected error',
+          text2: 'Could not connect to the server',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      case 503:
+        Toast.show({
+          type: 'error',
+          text1: 'Unexpected error',
+          text2: 'Server is Unavailable, try again later',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+    }
+  }, []);
+
   useEffect(() => {
     checkEmptyFields();
   });
@@ -117,6 +178,7 @@ export const Signup = ({navigation}: NavigationProps) => {
           },
         });
         console.log(response.status);
+        handleSignUpResponse(response);
       } catch (error) {
         console.error(error);
       } finally {
