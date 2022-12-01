@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,13 +6,14 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
-  Image,
+  ImageBackground,
 } from 'react-native';
 import {NavigationProps} from './navigation/screenTypes';
 import {TextInput2} from './components/TextInput2';
 import {colors} from './styles/colors';
 import {Button2} from './components/Button2';
 import Toast from 'react-native-toast-message';
+import {Icon} from '@rneui/themed';
 const signupAPI = 'https://newpantry.herokuapp.com/api/signup';
 
 export const Signup = ({navigation}: NavigationProps) => {
@@ -21,9 +22,21 @@ export const Signup = ({navigation}: NavigationProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
   const [disable, setIsDisable] = useState(true);
   const [isDirty, setIsDirty] = useState(false);
   const md5 = require('md5');
+  const imageList: string[] = [
+    'https://i.imgur.com/cEw6FVg.png',
+    'https://i.imgur.com/KxMOJIP.png',
+    'https://i.imgur.com/sCjPtpC.png',
+    'https://i.imgur.com/AeHX704.png',
+    'https://i.imgur.com/JMhY6zW.png',
+    'https://i.imgur.com/Ak6Q5eK.png',
+  ];
+  const [index, setIndex] = useState(0);
+  const currentIndex = useRef<number>(0);
+  const listLength = imageList.length;
 
   function emptyFields() {
     setFirstName('');
@@ -46,6 +59,46 @@ export const Signup = ({navigation}: NavigationProps) => {
       setIsDisable(false);
     }
   }
+
+  function onPressLeft() {
+    currentIndex.current = (currentIndex.current - 1) % listLength;
+    setIndex(Math.abs(currentIndex.current));
+    setProfilePicture(imageList[index]);
+    console.log(index, imageList[index]);
+  }
+  function onPressRight() {
+    currentIndex.current = (currentIndex.current + 1) % listLength;
+    setIndex(currentIndex.current);
+    setProfilePicture(imageList[index]);
+    console.log(index, imageList[index]);
+  }
+
+  const ImageCarousel = () => {
+    return (
+      <View style={localStyle.logoContainer}>
+        <Icon
+          name="arrow-left"
+          color={colors.darkOliveGreen}
+          size={80}
+          type="MaterialIcons"
+          containerStyle={{width: 90}}
+          onPress={onPressLeft}
+        />
+        <ImageBackground
+          source={{uri: imageList[index]}}
+          style={localStyle.imageBackground}
+        />
+        <Icon
+          name="arrow-right"
+          color={colors.darkOliveGreen}
+          size={80}
+          type="MaterialIcons"
+          containerStyle={{width: 60}}
+          onPress={onPressRight}
+        />
+      </View>
+    );
+  };
 
   const validateEmail = () => {
     // eslint-disable-next-line no-useless-escape
@@ -166,7 +219,7 @@ export const Signup = ({navigation}: NavigationProps) => {
         lastName: lastName,
         email: email,
         password: md5Pass,
-        profilePicture: 'https://i.imgur.com/cEw6FVg.png',
+        profilePicture: profilePicture,
       });
       console.log(body);
       try {
@@ -195,9 +248,7 @@ export const Signup = ({navigation}: NavigationProps) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={localStyle.container}>
       <View style={localStyle.formContainer}>
-        <View style={localStyle.logoContainer}>
-          <Image source={require('./assets/men1.png')} />
-        </View>
+        <ImageCarousel />
         <TextInput2
           placeholder="first name"
           onChangeText={setFirstName}
@@ -257,6 +308,7 @@ const localStyle = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
+    flexDirection: 'row',
   },
   textStyle: {
     color: colors.darkOliveGreen,
@@ -273,5 +325,10 @@ const localStyle = StyleSheet.create({
     color: colors.gleeful,
     fontWeight: 'bold',
     paddingLeft: 5,
+  },
+  imageBackground: {
+    width: 220,
+    height: 250,
+    borderRadius: 300,
   },
 });
