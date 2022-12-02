@@ -1,6 +1,5 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   View,
@@ -10,51 +9,57 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import {NavigationProps} from './navigation/screenTypes';
 import {colors} from './styles/colors';
 import Icons from './styles/icons';
 import {CategoryBotton} from './components/CategoryBotton';
 import {CardItem} from './components/CardItem';
+import {AuthContext} from '../auth/authContext';
 
-export const Search = ({navigation}: NavigationProps) => {
+export const Search = () => {
+  const {email, token, addToFavorites} = useContext(AuthContext);
   const [Keyword, setKeyword] = useState('');
   const [Ingredient, setIngredient] = useState('');
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [meals, setMeals] = useState([]);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const [message, setMessage] = useState('');
 
   const categoryURL = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=';
-  const ingredientURL = 'https://www.themealdb.com/api/json/v1/1/filter.php?i=';
+  const ingredientURL =
+    'https://www.themealdb.com/api/json/v2/9973533/filter.php?i=';
 
   const getCategoryMeals = async (category: string, url: string) => {
+    setMeals([]);
+    handleModal();
+    setIsLoading(true);
     try {
       const response = await fetch(url + category);
       const json = await response.json();
-      console.log(category);
-
-      let listMeals: any = [];
-      for (let i = 0; i < 10; i++) {
-        if (json.meals[i] == null) {
-          continue;
+      if (json.meals === null) {
+        console.log('no result');
+        setIsLoading(false);
+        setMessage('No recipe found.');
+      } else {
+        let listMeals: any = [];
+        for (let i = 0; i < 10; i++) {
+          if (json.meals[i] == null) {
+            continue;
+          }
+          try {
+            const response2 = await fetch(
+              `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${json.meals[i].idMeal}`,
+            );
+            const jsonMeals = await response2.json();
+            listMeals.push(jsonMeals.meals[0]);
+          } catch (error) {
+            console.log('Error: ' + error);
+          }
         }
-        try {
-          const response2 = await fetch(
-            `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${json.meals[i].idMeal}`,
-          );
-          const jsonMeals = await response2.json();
-          console.log('midpoint');
-          listMeals.push(jsonMeals.meals[0]);
-        } catch (error) {
-          console.log('Error: ' + error);
-        }
+        setMeals(listMeals);
+        setIsLoading(false);
       }
-      setMeals(listMeals);
-      console.log('final: ' + meals);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
-      handleModal();
     }
   };
 
@@ -72,6 +77,7 @@ export const Search = ({navigation}: NavigationProps) => {
             <Icons.Ionicons name="search" style={localStyles.iconStyle} />
             <TextInput
               style={localStyles.textStyle}
+              placeholder="ex: egg,milk"
               value={Ingredient}
               onChangeText={setIngredient}
               onSubmitEditing={() => {
@@ -242,7 +248,7 @@ export const Search = ({navigation}: NavigationProps) => {
                   data={meals}
                   numColumns={2}
                   horizontal={false}
-                  keyExtractor={(item: any, index) => {
+                  keyExtractor={(item: any) => {
                     return item.idMeal;
                   }}
                   renderItem={({item}: any) => (
@@ -250,12 +256,16 @@ export const Search = ({navigation}: NavigationProps) => {
                       uri={item.strMealThumb}
                       title={item.strMeal}
                       instructions={item.strInstructions}
+                      onPressFavorite={() =>
+                        addToFavorites(email ?? '', item.strMeal, token ?? '')
+                      }
                     />
                   )}
                 />
               </View>
             </>
           )}
+          <Text style={localStyles.noResult}>{message}</Text>
         </Modal>
       </View>
     </ScrollView>
@@ -268,7 +278,7 @@ const localStyles = StyleSheet.create({
     marginHorizontal: '4%',
   },
   search: {
-    marginVertical: '6%',
+    marginVertical: '4%',
     paddingLeft: 4,
     fontSize: 17,
     fontWeight: 'bold',
@@ -331,5 +341,12 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 100,
     marginBottom: 4,
+  },
+  noResult: {
+    fontSize: 20,
+    fontFamily: 'Barlow',
+    fontWeight: 'bold',
+    color: colors.goldenRod,
+    alignSelf: 'center',
   },
 });
