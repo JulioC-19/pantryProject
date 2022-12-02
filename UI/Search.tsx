@@ -36,9 +36,8 @@ export const Search = () => {
       const response = await fetch(url + category);
       const json = await response.json();
       if (json.meals === null) {
-        console.log('no result');
         setIsLoading(false);
-        setMessage('No recipe found.');
+        setMessage('No recipes were found.');
       } else {
         let listMeals: any = [];
         for (let i = 0; i < 10; i++) {
@@ -64,6 +63,9 @@ export const Search = () => {
   };
 
   function handleModal() {
+    if (isModalVisible === true) {
+      setMessage('');
+    }
     setIsModalVisible(() => !isModalVisible);
   }
 
@@ -335,7 +337,7 @@ const localStyles = StyleSheet.create({
   },
   resultContainer: {
     alignItems: 'center',
-    paddingBottom: 100,
+    paddingBottom: 120,
     marginBottom: 4,
   },
   noResult: {
