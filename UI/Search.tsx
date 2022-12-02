@@ -81,8 +81,10 @@ export const Search = () => {
               value={Ingredient}
               onChangeText={setIngredient}
               onSubmitEditing={() => {
-                setKeyword(Ingredient);
-                getCategoryMeals(Ingredient, ingredientURL);
+                if (Ingredient !== '') {
+                  setKeyword(Ingredient);
+                  getCategoryMeals(Ingredient, ingredientURL);
+                }
               }}
             />
           </View>
@@ -225,15 +227,13 @@ export const Search = () => {
         </ScrollView>
 
         <Modal animationType="slide" visible={isModalVisible}>
-          <View style={localStyles.closeIcon}>
+          <View style={localStyles.searchContainer}>
             <Icons.AntDesign
               name="arrowleft"
               color={'black'}
               size={30}
               onPress={handleModal}
             />
-          </View>
-          <View style={localStyles.searchContainer}>
             <Text style={localStyles.search}>
               Search result: {Keyword.toUpperCase()}
             </Text>
@@ -328,14 +328,10 @@ const localStyles = StyleSheet.create({
     justifyContent: 'space-around',
   },
 
-  closeIcon: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-  },
+  //Modal
   searchContainer: {
-    marginTop: '8%',
-    marginHorizontal: '6%',
+    marginTop: '6%',
+    marginHorizontal: '4%',
   },
   resultContainer: {
     alignItems: 'center',
