@@ -17,16 +17,12 @@ import {
   AuthActionTypes,
 } from './auth/authReducer';
 import {AuthContext} from './auth/authContext';
-import {
-  SearchBarIcon,
-  FavoriteBarIcon,
-  HomeBarIcon,
-  ProfileBarIcon,
-} from './UI/components/IconComponents';
+
 import {LoadingScreen} from './UI/components/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import {toastConfig} from './UI/styles/toastConfig';
+import Icon from './UI/styles/icons';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 const favoriteURL = 'https://newpantry.herokuapp.com/api/favorites';
 
@@ -260,27 +256,52 @@ function App() {
             <Stack.Screen name="Signup" component={Signup} />
           </Stack.Navigator>
         ) : (
-          <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
-            <Tab.Screen
-              name="Search"
-              component={Search}
-              options={{tabBarIcon: SearchBarIcon}}
-            />
-            <Tab.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{tabBarIcon: HomeBarIcon}}
-            />
-            <Tab.Screen
-              name="Favorites"
-              component={UserFavScreen}
-              options={{tabBarIcon: FavoriteBarIcon}}
-            />
-            <Tab.Screen
-              name="Profile"
-              component={ProfileScreen}
-              options={{tabBarIcon: ProfileBarIcon}}
-            />
+          <Tab.Navigator
+            barStyle={localStyles.bottomTab}
+            labeled={false}
+            screenOptions={({route}) => ({
+              tabBarIcon: ({focused}) => {
+                if (route.name === 'Home') {
+                  return (
+                    <Icon.MaterialCommunityIcons
+                      name="home"
+                      color={focused ? colors.fullYellow : colors.white}
+                      size={28}
+                    />
+                  );
+                } else if (route.name === 'Favorites') {
+                  return (
+                    <Icon.MaterialIcons
+                      name="favorite"
+                      color={focused ? colors.fullYellow : colors.white}
+                      size={26}
+                    />
+                  );
+                } else if (route.name === 'Search') {
+                  return (
+                    <Icon.Ionicons
+                      name="md-search"
+                      color={focused ? colors.fullYellow : colors.white}
+                      size={26}
+                    />
+                  );
+                } else if (route.name === 'Profile') {
+                  return (
+                    <Icon.FontAwesome
+                      name="user"
+                      color={focused ? colors.fullYellow : colors.white}
+                      size={28}
+                    />
+                  );
+                }
+              },
+              tabBarActiveTintColor: colors.fullYellow,
+              tabBarInactiveTintColor: colors.white,
+            })}>
+            <Tab.Screen name="Search" component={Search} />
+            <Tab.Screen name="Home" component={HomeScreen} />
+            <Tab.Screen name="Favorites" component={UserFavScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
           </Tab.Navigator>
         )}
       </NavigationContainer>

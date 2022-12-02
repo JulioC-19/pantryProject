@@ -5,6 +5,7 @@ import {useContext, useEffect, useState} from 'react';
 import {CardItem} from './components/CardItem';
 import {LoadingScreen} from './components/LoadingScreen';
 import {getIngredientList, mealWithIngredients} from './HomeScreen';
+import {colors} from './styles/colors';
 
 const URL = 'https://newpantry.herokuapp.com/api/favorites';
 
@@ -125,6 +126,7 @@ export const FavScreen = () => {
           addToFavorites(email ?? '', item.strMeal, token ?? '')
         }
         isFavorite={true}
+        titleBackground={colors.darkOliveGreen}
       />
     );
   };

@@ -178,6 +178,7 @@ export const HomeScreen = () => {
           addToFavorites(email ?? '', item.strMeal, token ?? '')
         }
         isFavorite={favMeals.includes(item.strMeal)}
+        titleBackground={colors.goldenRod}
       />
     );
   };
@@ -198,6 +199,7 @@ export const HomeScreen = () => {
           addToFavorites(email ?? '', item.strMeal, token ?? '')
         }
         isFavorite={favMeals.includes(item.strMeal)}
+        titleBackground={colors.mountainIris}
       />
     );
   };

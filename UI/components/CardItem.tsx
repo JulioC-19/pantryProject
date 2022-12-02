@@ -21,6 +21,7 @@ type headerProps = {
 };
 
 type cardItemProps = {
+  titleBackground?: ColorValue | undefined;
   uri: string;
   title: string;
   ingredientList?: ingredientItem[];
@@ -61,7 +62,11 @@ export const CardItem = (props: cardItemProps) => {
           style={styles.imageBackground}
           source={{uri: props.uri}}
           imageStyle={styles.cardRadius}>
-          <View style={styles.textContainer}>
+          <View
+            style={[
+              styles.textContainer,
+              {backgroundColor: props.titleBackground},
+            ]}>
             <Text style={styles.text}> {props.title}</Text>
           </View>
           <FavoriteIcon
@@ -112,20 +117,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   textContainer: {
-    backgroundColor: 'transparent',
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: 'center',
     alignItems: 'flex-start',
+    height: 50,
+    opacity: 0.6,
+    borderRadius: 15,
   },
   text: {
     color: 'white',
     fontSize: 20,
     fontFamily: 'Barlow',
-    fontWeight: 'bold',
+    fontWeight: '900',
     textAlign: 'left',
   },
   listHeaderContainer: {

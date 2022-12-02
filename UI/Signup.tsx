@@ -64,15 +64,14 @@ export const Signup = ({navigation}: NavigationProps) => {
     currentIndex.current = (currentIndex.current - 1) % listLength;
     setIndex(Math.abs(currentIndex.current));
     setProfilePicture(imageList[index]);
-    console.log(index, imageList[index]);
   }
   function onPressRight() {
     currentIndex.current = (currentIndex.current + 1) % listLength;
     setIndex(currentIndex.current);
-    setProfilePicture(imageList[index]);
-    console.log(index, imageList[index]);
+    setProfilePicture(imageList[currentIndex.current]);
   }
 
+  console.log(currentIndex.current, index);
   const ImageCarousel = () => {
     return (
       <View style={localStyle.logoContainer}>
@@ -148,7 +147,7 @@ export const Signup = ({navigation}: NavigationProps) => {
           type: 'success',
           text1: 'User created!',
           text2: 'Please check your email to verify account',
-          visibilityTime: 2000,
+          visibilityTime: 6000,
           autoHide: true,
         });
         break;
