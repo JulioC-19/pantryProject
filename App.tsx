@@ -17,16 +17,12 @@ import {
   AuthActionTypes,
 } from './auth/authReducer';
 import {AuthContext} from './auth/authContext';
-import {
-  SearchBarIcon,
-  FavoriteBarIcon,
-  HomeBarIcon,
-  ProfileBarIcon,
-} from './UI/components/IconComponents';
+
 import {LoadingScreen} from './UI/components/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import {toastConfig} from './UI/styles/toastConfig';
+import Icon from './UI/styles/icons';
 const loginAPI = 'https://newpantry.herokuapp.com/api/login';
 const favoriteURL = 'https://newpantry.herokuapp.com/api/favorites';
 
@@ -75,12 +71,6 @@ function App() {
             // saving error
             console.log('SAVING ERROR ' + e);
           }
-          Toast.show({
-            type: 'success',
-            text1: 'Login succesful',
-            visibilityTime: 2000,
-            autoHide: true,
-          });
           break;
         case 400:
           dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
@@ -185,7 +175,6 @@ function App() {
         // log in
         dispatch({type: AuthActionTypes.LOGIN, payload: {isLoading: true}});
         const validateEmail = validate(email);
-        console.log(validateEmail);
         if (validateEmail) {
           try {
             const response = await fetch(loginAPI, {
@@ -198,7 +187,6 @@ function App() {
                 'Content-Type': 'application/json',
               },
             });
-            console.log(response.status);
             handleLoginResponse(response);
           } catch (error) {
             dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
@@ -209,8 +197,7 @@ function App() {
           dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
           Toast.show({
             type: 'info',
-            text1: 'Invalid input',
-            text2: 'Please enter a valid email',
+            text1: 'Please enter a valid email',
             visibilityTime: 4000,
             autoHide: true,
           });
@@ -224,7 +211,6 @@ function App() {
           await AsyncStorage.removeItem('@firstName');
           await AsyncStorage.removeItem('@lastName');
           await AsyncStorage.removeItem('@profilePicture');
-          console.log('LOGOUT Successful');
         } catch {
           console.log('LOGOUT ERROR');
         }
@@ -249,7 +235,6 @@ function App() {
             },
           });
           const json = await response.json();
-          console.log(json);
         } catch (error) {
           console.log(error);
         }
@@ -293,27 +278,52 @@ function App() {
             <Stack.Screen name="Signup" component={Signup} />
           </Stack.Navigator>
         ) : (
-          <Tab.Navigator barStyle={localStyles.bottomTab} labeled={false}>
-            <Tab.Screen
-              name="Search"
-              component={Search}
-              options={{tabBarIcon: SearchBarIcon}}
-            />
-            <Tab.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{tabBarIcon: HomeBarIcon}}
-            />
-            <Tab.Screen
-              name="Favorites"
-              component={UserFavScreen}
-              options={{tabBarIcon: FavoriteBarIcon}}
-            />
-            <Tab.Screen
-              name="Profile"
-              component={ProfileScreen}
-              options={{tabBarIcon: ProfileBarIcon}}
-            />
+          <Tab.Navigator
+            barStyle={localStyles.bottomTab}
+            labeled={false}
+            screenOptions={({route}) => ({
+              tabBarIcon: ({focused}) => {
+                if (route.name === 'Home') {
+                  return (
+                    <Icon.MaterialCommunityIcons
+                      name="home"
+                      color={focused ? colors.fullYellow : colors.white}
+                      size={28}
+                    />
+                  );
+                } else if (route.name === 'Favorites') {
+                  return (
+                    <Icon.MaterialIcons
+                      name="favorite"
+                      color={focused ? colors.fullYellow : colors.white}
+                      size={26}
+                    />
+                  );
+                } else if (route.name === 'Search') {
+                  return (
+                    <Icon.Ionicons
+                      name="md-search"
+                      color={focused ? colors.fullYellow : colors.white}
+                      size={26}
+                    />
+                  );
+                } else if (route.name === 'Profile') {
+                  return (
+                    <Icon.FontAwesome
+                      name="user"
+                      color={focused ? colors.fullYellow : colors.white}
+                      size={28}
+                    />
+                  );
+                }
+              },
+              tabBarActiveTintColor: colors.fullYellow,
+              tabBarInactiveTintColor: colors.white,
+            })}>
+            <Tab.Screen name="Search" component={Search} />
+            <Tab.Screen name="Home" component={HomeScreen} />
+            <Tab.Screen name="Favorites" component={UserFavScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
           </Tab.Navigator>
         )}
       </NavigationContainer>

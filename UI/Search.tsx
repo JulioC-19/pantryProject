@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,7 @@ import Icons from './styles/icons';
 import {CategoryBotton} from './components/CategoryBotton';
 import {CardItem} from './components/CardItem';
 import {AuthContext} from '../auth/authContext';
+import {getIngredientList, mealWithIngredients} from './HomeScreen';
 
 export const Search = () => {
   const {email, token, addToFavorites} = useContext(AuthContext);
@@ -21,12 +22,17 @@ export const Search = () => {
   const [Ingredient, setIngredient] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [meals, setMeals] = useState([]);
+  const [favMeals, setFavMeals] = useState<string[]>([]);
   const [isModalVisible, setIsModalVisible] = React.useState(false);
   const [message, setMessage] = useState('');
+  const [mealsIngredients, setMealsIngredients] = useState<mealWithIngredients>(
+    {},
+  );
 
   const categoryURL = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=';
   const ingredientURL =
     'https://www.themealdb.com/api/json/v2/9973533/filter.php?i=';
+  const favURL = 'https://newpantry.herokuapp.com/api/favorites';
 
   const getCategoryMeals = async (category: string, url: string) => {
     setMeals([]);
@@ -55,6 +61,8 @@ export const Search = () => {
           }
         }
         setMeals(listMeals);
+        let ingredientList = getIngredientList(listMeals);
+        setMealsIngredients(ingredientList);
         setIsLoading(false);
       }
     } catch (error) {
@@ -68,6 +76,28 @@ export const Search = () => {
     }
     setIsModalVisible(() => !isModalVisible);
   }
+
+  useEffect(() => {
+    const getUserFavRecipies = async () => {
+      try {
+        const body = JSON.stringify({email: email});
+        const response = await fetch(favURL, {
+          credentials: 'include',
+          method: 'POST',
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token ?? '',
+          },
+        });
+        const json = await response.json();
+        setFavMeals(json);
+      } catch (error) {
+        console.log('ERROR: ' + error);
+      }
+    };
+    getUserFavRecipies();
+  }, [email, token]);
 
   return (
     <ScrollView>
@@ -257,10 +287,12 @@ export const Search = () => {
                     <CardItem
                       uri={item.strMealThumb}
                       title={item.strMeal}
+                      ingredientList={mealsIngredients[item.idMeal]}
                       instructions={item.strInstructions}
                       onPressFavorite={() =>
                         addToFavorites(email ?? '', item.strMeal, token ?? '')
                       }
+                      isFavorite={favMeals.includes(item.strMeal)}
                     />
                   )}
                 />
