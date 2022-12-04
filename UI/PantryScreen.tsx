@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Alert,
   Button,
@@ -10,106 +10,128 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  ListRenderItemInfo,
-  GestureResponderEvent,
 } from 'react-native';
 import {GestureHandlerRootView, Swipeable} from 'react-native-gesture-handler';
-import {NavigationProps} from './navigation/screenTypes';
+import {AuthContext} from '../auth/authContext';
 import {colors} from './styles/colors';
 import Icon from './styles/icons';
 
-const tempDateToDelete = [
-  {
-    id: 1,
-    title: 'toast',
-  },
-  {
-    id: 2,
-    title: 'egg',
-  },
-  {
-    id: 3,
-    title: 'bacon',
-  },
-  {
-    id: 4,
-    title: 'cheese',
-  },
-  {
-    id: 5,
-    title: 'lettuce',
-  },
-  {
-    id: 6,
-    title: 'mayo',
-  },
-  {
-    id: 7,
-    title: 'tomato',
-  },
-  {
-    id: 8,
-    title: 'toast',
-  },
-  {
-    id: 9,
-    title: 'egg',
-  },
-  {
-    id: 10,
-    title: 'bacon',
-  },
-  {
-    id: 11,
-    title: 'cheese',
-  },
-];
-
-export const PantryScreen = ({navigation}: NavigationProps) => {
+export const PantryScreen = () => {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
-  const [Ingredient, setIngredient] = useState('');
-  const [listData, setListData] = useState(tempDateToDelete);
+  const [ingredient, setIngredient] = useState('');
+  const [list, setList] = useState<string[]>([]);
 
-  let row: Array<any> = [];
-  let prevOpenedRow: any;
+  const {email, token} = useContext(AuthContext);
+  const tk: string = token!;
+  const URL = 'https://newpantry.herokuapp.com/api/pantry';
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    getPantryItem();
+  });
+
+  const getPantryItem = async () => {
+    try {
+      const response = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify({email: email}),
+        headers: {
+          'Content-Type': 'application/json',
+          // eslint-disable-next-line prettier/prettier
+          'Authorization': tk,
+        },
+      });
+      const json = await response.json();
+      const jsonIngredients = json.pantryIngredients;
+      const newIngredients = jsonIngredients.filter((element: any) => {
+        return element !== null && element !== '';
+      });
+      //console.log(jsonIngredients);
+      // if (arrayEquals(list, jsonIngredients)) {
+      //   setList(jsonIngredients);
+      // }
+      setList(newIngredients);
+    } catch (error) {
+      console.log('getPantry error:: ' + error);
+    }
+  };
+
+  const addPantryItem = async (item: string) => {
+    if (item === '') {
+      console.log('no user input for addPantryItem');
+      setMessage('Cannot add empty items');
+      return;
+    } else if (list.includes(item)) {
+      console.log('Cannot add repeat items');
+      setMessage('Cannot add repeat items');
+      return;
+    }
+    try {
+      const response = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify({email: email, ingredient: item}),
+        headers: {
+          'Content-Type': 'application/json',
+          // eslint-disable-next-line prettier/prettier
+          'Authorization': tk,
+        },
+      });
+      const json = await response.json();
+      const jsonIngredients = json.pantryIngredients;
+      //Remove any empty item in the list
+      const newIngredients = jsonIngredients.filter((element: any) => {
+        return element !== null && element !== '';
+      });
+      console.log(item + ' is added.');
+      console.log(newIngredients);
+      setList(newIngredients);
+      setIsModalVisible(() => !isModalVisible);
+    } catch (error) {
+      console.log('ERROR: add pantry ' + error);
+    }
+  };
+
+  var row: Array<any> = [];
 
   function showModal() {
-    setIsModalVisible(() => !isModalVisible);
+    setMessage('');
     setIngredient('');
-  }
-  function addPantryItem() {
-    if (!Ingredient) {
-      console.log('no user input for addPantryItem');
-    } else {
-      console.log(Ingredient + ' is added.');
-      setIsModalVisible(() => !isModalVisible);
-    }
+    setIsModalVisible(() => !isModalVisible);
   }
 
   /*
    * swipable function below *
    */
+  //herherherherhher
 
   const renderItem = (
-    {item, index}: ListRenderItemInfo<{id: number; title: string}>,
+    {item, index}: {item: string; index: number},
     onClick: () => void,
   ) => {
     const closeRow = (index: number) => {
-      console.log('close row');
-      if (prevOpenedRow && prevOpenedRow !== row[index]) {
-        prevOpenedRow.close();
-      }
-      prevOpenedRow = row[index];
+      setTimeout(() => {
+        console.log('close row', index);
+        //console.log(row);
+        console.log(row[index]);
+        if (row[index]) {
+          row[index].close();
+        }
+      }, 2000);
     };
 
     const renderRightActions = (
       progress: any,
       dragX: any,
-      onClick: ((event: GestureResponderEvent) => void) | undefined,
+      onClick: () => void,
     ) => {
       return (
         <View style={localStyles.sideButton}>
-          <Button color={colors.mandarinRed} onPress={onClick} title="DELETE" />
+          <TouchableOpacity onPress={onClick}>
+            <Icon.Entypo
+              name="circle-with-cross"
+              style={localStyles.deleteButton}
+            />
+          </TouchableOpacity>
         </View>
       );
     };
@@ -121,27 +143,39 @@ export const PantryScreen = ({navigation}: NavigationProps) => {
             renderRightActions(progress, dragX, onClick)
           }
           onSwipeableOpen={() => closeRow(index)}
-          rightThreshold={10}
+          rightThreshold={20}
           overshootRight={false}
           overshootLeft={false}
           ref={ref => (row[index] = ref)}>
           <View style={localStyles.itemBox}>
-            <Text style={localStyles.itemText}>{item.title}</Text>
+            <Text style={localStyles.itemText}>{item}</Text>
           </View>
         </Swipeable>
       </GestureHandlerRootView>
     );
   };
 
-  const deleteItem = ({
-    item,
-    index,
-  }: ListRenderItemInfo<{id: number; title: string}>) => {
-    console.log(item, index);
-    let a = listData;
-    a.splice(index, 1);
-    console.log(a);
-    setListData([...a]);
+  const deleteItem = async ({item}: {item: string}) => {
+    Alert.alert('Delete  Confirmation: ' + item);
+    try {
+      const response = await fetch(URL, {
+        method: 'POST',
+        body: JSON.stringify({email: email, ingredient: item}),
+        headers: {
+          'Content-Type': 'application/json',
+          // eslint-disable-next-line prettier/prettier
+          'Authorization': tk,
+        },
+      });
+      const json = await response.json();
+      const jsonIngredients = json.pantryIngredients;
+      const newIngredients = jsonIngredients.filter((element: any) => {
+        return element !== null && element !== '';
+      });
+      setList(newIngredients);
+    } catch (error) {
+      console.log('getPantry error:: ' + error);
+    }
   };
 
   /*
@@ -164,23 +198,26 @@ export const PantryScreen = ({navigation}: NavigationProps) => {
         <Modal animationType="fade" visible={isModalVisible} transparent>
           <View style={localStyles.centeredView}>
             <View style={localStyles.modalView}>
-              <Text style={localStyles.text}>Add Ingredient</Text>
+              {/* <Text style={localStyles.text}>Add Pantry Item</Text> */}
               <View style={localStyles.inputContainer}>
                 <TextInput
-                  value={Ingredient}
-                  onChangeText={ingredient => setIngredient(ingredient)}
+                  placeholder="Pantry Item"
+                  value={ingredient}
+                  onChangeText={setIngredient}
+                  style={{flex: 1}}
                 />
               </View>
+              <Text style={localStyles.text}>{message}</Text>
               <View style={localStyles.buttonContainer}>
                 <Button
-                  title="Add"
-                  color={colors.fullYellow}
-                  onPress={addPantryItem}
+                  title="Cancel"
+                  color={colors.goldenRod}
+                  onPress={() => setIsModalVisible(() => !isModalVisible)}
                 />
                 <Button
-                  title="Cancel"
-                  color={colors.gainsBoro}
-                  onPress={() => setIsModalVisible(() => !isModalVisible)}
+                  title="Save"
+                  color={colors.gleeful}
+                  onPress={() => addPantryItem(ingredient)}
                 />
               </View>
             </View>
@@ -189,14 +226,15 @@ export const PantryScreen = ({navigation}: NavigationProps) => {
 
         <View style={localStyles.itemContainer}>
           <FlatList
-            data={listData}
+            showsVerticalScrollIndicator={false}
+            data={list}
             renderItem={v =>
               renderItem(v, () => {
                 console.log('Pressed', v);
                 deleteItem(v);
               })
             }
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
       </View>
@@ -232,15 +270,7 @@ const localStyles = StyleSheet.create({
   addButton: {
     fontSize: 40,
     color: colors.gleeful,
-    backgroundColor: colors.white,
     borderRadius: 40,
-  },
-
-  //add and cancel buttons
-  buttonContainer: {
-    marginVertical: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
 
   itemContainer: {
@@ -251,22 +281,30 @@ const localStyles = StyleSheet.create({
   },
   itemBox: {
     marginVertical: 2,
-    padding: 4,
+    padding: 5,
+    height: 42,
     alignItems: 'center',
-    height: 38,
     backgroundColor: colors.white,
   },
   itemText: {
     fontSize: 20,
     fontWeight: 'bold',
+    justifyContent: 'center',
     color: colors.darkOliveGreen,
   },
 
   //Side Delete button
   sideButton: {
-    alignContent: 'center',
+    backgroundColor: colors.mandarinRed,
+    height: 42,
+    width: 60,
+    paddingHorizontal: 14,
     justifyContent: 'center',
-    width: 70,
+    alignSelf: 'center',
+  },
+  deleteButton: {
+    fontSize: 30,
+    color: colors.white,
   },
 
   //Modal style
@@ -274,6 +312,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   modalView: {
     width: '70%',
@@ -281,15 +320,16 @@ const localStyles = StyleSheet.create({
     margin: 20,
     backgroundColor: colors.white,
     borderRadius: 20,
-    padding: 35,
+    padding: 38,
     alignItems: 'center',
     elevation: 5,
   },
   text: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     fontFamily: 'Barlow',
-    marginBottom: 10,
+    color: colors.mandarinRed,
+    marginBottom: 8,
   },
   inputContainer: {
     height: 50,
@@ -297,8 +337,13 @@ const localStyles = StyleSheet.create({
     backgroundColor: colors.gainsBoro,
     flexDirection: 'row',
     paddingHorizontal: 15,
-    marginBottom: 15,
+    marginBottom: 10,
     alignItems: 'center',
     borderRadius: 10,
+  },
+  //save and cancel buttons
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
