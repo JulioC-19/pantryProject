@@ -71,7 +71,6 @@ export const Signup = ({navigation}: NavigationProps) => {
     setProfilePicture(imageList[currentIndex.current]);
   }
 
-  console.log(currentIndex.current, index);
   const ImageCarousel = () => {
     return (
       <View style={localStyle.logoContainer}>
@@ -80,6 +79,7 @@ export const Signup = ({navigation}: NavigationProps) => {
           color={colors.darkOliveGreen}
           size={80}
           type="MaterialIcons"
+          // eslint-disable-next-line react-native/no-inline-styles
           containerStyle={{width: 90}}
           onPress={onPressLeft}
         />
@@ -92,6 +92,7 @@ export const Signup = ({navigation}: NavigationProps) => {
           color={colors.darkOliveGreen}
           size={80}
           type="MaterialIcons"
+          // eslint-disable-next-line react-native/no-inline-styles
           containerStyle={{width: 60}}
           onPress={onPressRight}
         />
