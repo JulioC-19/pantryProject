@@ -12,15 +12,15 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {colors} from './styles/colors';
 import Icons from './styles/icons';
-import {FavoriteIcon} from './components/CardItem';
 
-type ingredientItem = {
+export type ingredientItem = {
   id: string;
   name: string;
 };
 
-type IngredientListProps = {
-  ingredientList: ingredientItem[];
+type ingredientList = {
+  key?: string;
+  ingredientList?: ingredientItem[];
 };
 
 type recipeScreenProps = {
@@ -31,29 +31,6 @@ type recipeScreenProps = {
   source: ImageSourcePropType;
   onHide?: () => void;
 };
-
-const list = [
-  {
-    id: '1',
-    name: 'First Item',
-  },
-  {
-    id: '2',
-    name: 'Second Item',
-  },
-  {
-    id: '3',
-    name: 'Third Item',
-  },
-  {
-    id: '4',
-    name: 'Fourth Item',
-  },
-  {
-    id: '5',
-    name: 'Fith Item',
-  },
-];
 
 const IngredientItem = (props: ingredientItem) => {
   return (
@@ -66,26 +43,24 @@ const IngredientItem = (props: ingredientItem) => {
   );
 };
 
-const IngredientList = (props: IngredientListProps) => {
+const IngredientList = (props: ingredientList) => {
   return (
     <View style={styles.ingredientList}>
-      {props.ingredientList.map(item => (
-        <IngredientItem id={item.id} name={item.name} />
+      {props.ingredientList?.map(item => (
+        <IngredientItem id={item.id} name={item.name} key={item.id} />
       ))}
     </View>
   );
 };
 
 const Ingredients = (props: {
-  list: ingredientItem[];
+  list?: ingredientItem[];
   containerStyle?: StyleProp<ViewStyle>;
 }) => {
   return (
     <View style={props.containerStyle}>
       <Text style={styles.header}>INGREDIENTS</Text>
       <View style={styles.container}>
-        {/*TODO: This list needs to be sliced in half*/}
-        <IngredientList ingredientList={props.list} />
         <IngredientList ingredientList={props.list} />
       </View>
     </View>
@@ -125,11 +100,12 @@ export const RecipeScreen = (props: recipeScreenProps) => {
   return (
     <Modal visible={props.isVisible} animationType="slide">
       <ScrollView>
-        <View>
+        <View style={styles.imageContainer}>
           <ImageBackground
             source={props.source}
             resizeMode={'cover'}
             style={styles.image}
+            imageStyle={styles.imageContainer}
           />
           <View style={styles.closeIcon}>
             <Icons.AntDesign
@@ -139,14 +115,12 @@ export const RecipeScreen = (props: recipeScreenProps) => {
               onPress={onHide}
             />
           </View>
-          <FavoriteIcon
-            heartBackgroundColor={colors.fullYellow}
-            onPress={() => null}
-            containerStyle={styles.favoriteContainer}
-          />
         </View>
         <RecipeName recipeName={props.recipeName} />
-        <Ingredients containerStyle={styles.boxContainer} list={list} />
+        <Ingredients
+          containerStyle={styles.boxContainer}
+          list={props.ingredients}
+        />
         <Directions
           containerStyle={styles.boxContainer}
           directions={props.instructions ?? ''}
@@ -163,7 +137,7 @@ const styles = StyleSheet.create({
     left: 0,
   },
   header: {
-    fontSize: 24,
+    fontSize: 22,
     paddingBottom: 5,
     color: colors.darkOliveGreen,
   },
@@ -189,7 +163,10 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 280,
-    opacity: 0.8,
+  },
+  imageContainer: {
+    padding: 5,
+    borderRadius: 10,
   },
   favoriteContainer: {
     backgroundColor: 'transparent',
@@ -203,8 +180,10 @@ const styles = StyleSheet.create({
     right: 0,
   },
   boxContainer: {
-    paddingLeft: 20,
-    paddingTop: 10,
+    paddingRight: 10,
+    paddingLeft: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   ingredientText: {
     fontSize: 20,

@@ -13,6 +13,7 @@ import {
 import {colors} from '../styles/colors';
 import {Icon} from '@rneui/themed';
 import {RecipeScreen} from '../RecipeScreen';
+import {ingredientItem} from '../RecipeScreen';
 
 type headerProps = {
   title: String;
@@ -22,6 +23,7 @@ type headerProps = {
 type cardItemProps = {
   uri: string;
   title: string;
+  ingredientList?: ingredientItem[];
   instructions?: string;
   userEmail?: string;
   onPressFavorite?: (email: string, title: string) => void;
@@ -50,6 +52,7 @@ export const CardItem = (props: cardItemProps) => {
         isVisible={isVisible}
         source={{uri: props.uri}}
         onHide={() => setIsVisible(!isVisible)}
+        ingredients={props.ingredientList}
         instructions={props.instructions}
       />
 
