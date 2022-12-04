@@ -37,10 +37,14 @@ export const Login = ({navigation}: NavigationProps) => {
           value={password}
         />
 
+        <TouchableOpacity style={localStyles.forgotPass}>
+          <Text style={localStyles.ask}>Forgot password?</Text>
+        </TouchableOpacity>
+
         <Button2 title={'login'} onPress={() => logIn(email, password)} />
 
         <View style={localStyles.message}>
-          <Text style={localStyles.ask}>Not Registered?&nbsp;</Text>
+          <Text style={localStyles.ask}>Not Registered?</Text>
 
           <TouchableOpacity onPress={() => navigation.navigate('Signup', {})}>
             <Text style={localStyles.askSignup}>Sign Up</Text>
@@ -75,6 +79,13 @@ const localStyles = StyleSheet.create({
     color: colors.gleeful,
     fontSize: 14,
     fontWeight: 'bold',
+    paddingLeft: 5,
+  },
+  forgotPass: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginTop: '2%',
+    marginBottom: '2%',
   },
   flexOne: {flex: 1},
 });
