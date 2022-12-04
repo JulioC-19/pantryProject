@@ -92,11 +92,6 @@ export const ProfileScreen = () => {
     if (!validateName() || !validateLastName()) {
       setErrorName("Names can't contain numbers or special characters");
     }
-    if (!validatePassowrd()) {
-      setErrorName(
-        'Password must at least 6 characters, contain at least a number and a special character',
-      );
-    }
 
     if (newPassword !== password) {
       console.log('here');
