@@ -44,7 +44,7 @@ export const Login = ({navigation}: NavigationProps) => {
       if (response.status === 200) {
         Toast.show({
           type: 'success',
-          text1: 'Recovery email sent, Please check your email',
+          text1: 'Recovery email sent',
           visibilityTime: 4000,
           autoHide: true,
         });
