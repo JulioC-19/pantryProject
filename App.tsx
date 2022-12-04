@@ -71,12 +71,6 @@ function App() {
             // saving error
             console.log('SAVING ERROR ' + e);
           }
-          Toast.show({
-            type: 'success',
-            text1: 'Login succesful',
-            visibilityTime: 2000,
-            autoHide: true,
-          });
           break;
         case 400:
           dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
@@ -205,8 +199,7 @@ function App() {
           dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
           Toast.show({
             type: 'info',
-            text1: 'Invalid input',
-            text2: 'Please enter a valid email',
+            text1: 'Please enter a valid email',
             visibilityTime: 4000,
             autoHide: true,
           });
