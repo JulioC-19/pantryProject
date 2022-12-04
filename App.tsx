@@ -78,7 +78,6 @@ function App() {
           Toast.show({
             type: 'success',
             text1: 'Login succesful',
-            text2: 'Welcome!',
             visibilityTime: 2000,
             autoHide: true,
           });
@@ -87,8 +86,7 @@ function App() {
           dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
           Toast.show({
             type: 'error',
-            text1: 'Incorrect Input',
-            text2: 'Invalid email or password, please try again',
+            text1: 'Invalid email or password, please try again',
             visibilityTime: 6000,
             autoHide: true,
           });
@@ -97,12 +95,46 @@ function App() {
           dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
           Toast.show({
             type: 'info',
-            text1: 'User not verified',
-            text2: 'Please check you email and verify your account',
-            visibilityTime: 8000,
+            text1: 'Invalid password or user email not verified',
+            visibilityTime: 6000,
             autoHide: true,
           });
           break;
+        case 404:
+          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+          Toast.show({
+            type: 'error',
+            text1: 'Invalid email',
+            visibilityTime: 6000,
+            autoHide: true,
+          });
+          break;
+        case 500:
+          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+          Toast.show({
+            type: 'info',
+            text1: 'Unexpected server error',
+            visibilityTime: 6000,
+            autoHide: true,
+          });
+          break;
+        case 503:
+          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+          Toast.show({
+            type: 'info',
+            text1: 'Failed to connect to server',
+            visibilityTime: 6000,
+            autoHide: true,
+          });
+          break;
+        default:
+          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+          Toast.show({
+            type: 'info',
+            text1: 'Unexpected server error',
+            visibilityTime: 6000,
+            autoHide: true,
+          });
       }
     },
     [authState.firstName, authState.lastName, authState.profilePicture],
@@ -166,6 +198,7 @@ function App() {
                 'Content-Type': 'application/json',
               },
             });
+            console.log(response.status);
             handleLoginResponse(response);
           } catch (error) {
             dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
