@@ -46,10 +46,6 @@ export const PantryScreen = () => {
       const newIngredients = jsonIngredients.filter((element: any) => {
         return element !== null && element !== '';
       });
-      //console.log(jsonIngredients);
-      // if (arrayEquals(list, jsonIngredients)) {
-      //   setList(jsonIngredients);
-      // }
       setList(newIngredients);
     } catch (error) {
       console.log('getPantry error:: ' + error);
@@ -58,11 +54,9 @@ export const PantryScreen = () => {
 
   const addPantryItem = async (item: string) => {
     if (item === '') {
-      console.log('no user input for addPantryItem');
       setMessage('Cannot add empty items');
       return;
     } else if (list.includes(item)) {
-      console.log('Cannot add repeat items');
       setMessage('Cannot add repeat items');
       return;
     }
@@ -82,8 +76,6 @@ export const PantryScreen = () => {
       const newIngredients = jsonIngredients.filter((element: any) => {
         return element !== null && element !== '';
       });
-      console.log(item + ' is added.');
-      console.log(newIngredients);
       setList(newIngredients);
       setIsModalVisible(() => !isModalVisible);
     } catch (error) {
@@ -110,7 +102,6 @@ export const PantryScreen = () => {
   ) => {
     const closeRow = (index: number) => {
       setTimeout(() => {
-        console.log('close row', index);
         if (row[index]) {
           row[index].close();
         }
@@ -157,15 +148,11 @@ export const PantryScreen = () => {
     Alert.alert('Delete Comfirmation', item, [
       {
         text: 'Cancel',
-        onPress: () => {
-          console.log('Cancel Pressed');
-        },
         style: 'cancel',
       },
       {
         text: 'OK',
         onPress: () => {
-          //console.log('OK Pressed');
           deleteItem(item);
         },
       },
@@ -245,7 +232,6 @@ export const PantryScreen = () => {
             data={list}
             renderItem={v =>
               renderItem(v, () => {
-                console.log('Pressed', v);
                 deleteAlert(v);
               })
             }

@@ -126,12 +126,6 @@ export const Signup = ({navigation}: NavigationProps) => {
   };
 
   const validateAll = () => {
-    console.log(validateName());
-    console.log(validateLastName());
-    console.log(validateEmail());
-    console.log(validatePassowrd());
-    console.log(validateMatchingPasswords());
-
     return (
       validateEmail() &&
       validateLastName() &&
@@ -221,7 +215,6 @@ export const Signup = ({navigation}: NavigationProps) => {
         password: md5Pass,
         profilePicture: profilePicture,
       });
-      console.log(body);
       try {
         const response = await fetch(signupAPI, {
           method: 'POST',
@@ -230,7 +223,6 @@ export const Signup = ({navigation}: NavigationProps) => {
             'Content-Type': 'application/json',
           },
         });
-        console.log(response.status);
         handleSignUpResponse(response);
       } catch (error) {
         console.error(error);

@@ -175,7 +175,6 @@ function App() {
         // log in
         dispatch({type: AuthActionTypes.LOGIN, payload: {isLoading: true}});
         const validateEmail = validate(email);
-        console.log(validateEmail);
         if (validateEmail) {
           try {
             const response = await fetch(loginAPI, {
@@ -188,7 +187,6 @@ function App() {
                 'Content-Type': 'application/json',
               },
             });
-            console.log(response.status);
             handleLoginResponse(response);
           } catch (error) {
             dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
@@ -213,7 +211,6 @@ function App() {
           await AsyncStorage.removeItem('@firstName');
           await AsyncStorage.removeItem('@lastName');
           await AsyncStorage.removeItem('@profilePicture');
-          console.log('LOGOUT Successful');
         } catch {
           console.log('LOGOUT ERROR');
         }
@@ -238,7 +235,6 @@ function App() {
             },
           });
           const json = await response.json();
-          console.log(json);
         } catch (error) {
           console.log(error);
         }

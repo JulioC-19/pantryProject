@@ -43,7 +43,6 @@ export const ProfileScreen = () => {
   });
 
   const onEdit = async () => {
-    console.log(body);
     try {
       await fetch(editProfileAPI, {
         method: 'POST',
@@ -54,11 +53,9 @@ export const ProfileScreen = () => {
           'Authorization': tk,
         },
       });
-      console.log(newFirstName + ' ' + newLastName + ' ' + newPassword);
     } catch (error) {
       console.error('ERROR: edit profile');
     } finally {
-      console.log('Successful edit profile');
       setMessage('User profile updated.');
       await AsyncStorage.setItem('@firstName', newFirstName);
       await AsyncStorage.setItem('@lastName', newLastName);
