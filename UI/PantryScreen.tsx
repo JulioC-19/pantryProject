@@ -111,8 +111,6 @@ export const PantryScreen = () => {
     const closeRow = (index: number) => {
       setTimeout(() => {
         console.log('close row', index);
-        //console.log(row);
-        console.log(row[index]);
         if (row[index]) {
           row[index].close();
         }
@@ -155,8 +153,25 @@ export const PantryScreen = () => {
     );
   };
 
-  const deleteItem = async ({item}: {item: string}) => {
-    Alert.alert('Delete  Confirmation: ' + item);
+  const deleteAlert = ({item}: {item: string}) =>
+    Alert.alert('Delete Comfirmation', item, [
+      {
+        text: 'Cancel',
+        onPress: () => {
+          console.log('Cancel Pressed');
+        },
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          //console.log('OK Pressed');
+          deleteItem(item);
+        },
+      },
+    ]);
+
+  const deleteItem = async (item: string) => {
     try {
       const response = await fetch(URL, {
         method: 'POST',
@@ -231,7 +246,7 @@ export const PantryScreen = () => {
             renderItem={v =>
               renderItem(v, () => {
                 console.log('Pressed', v);
-                deleteItem(v);
+                deleteAlert(v);
               })
             }
             keyExtractor={(item, index) => index.toString()}
@@ -280,9 +295,9 @@ const localStyles = StyleSheet.create({
     color: colors.fullYellow,
   },
   itemBox: {
-    marginVertical: 2,
-    padding: 5,
-    height: 42,
+    marginVertical: 4,
+    padding: 9,
+    height: 48,
     alignItems: 'center',
     backgroundColor: colors.white,
   },
@@ -296,7 +311,7 @@ const localStyles = StyleSheet.create({
   //Side Delete button
   sideButton: {
     backgroundColor: colors.mandarinRed,
-    height: 42,
+    height: 48,
     width: 60,
     paddingHorizontal: 14,
     justifyContent: 'center',

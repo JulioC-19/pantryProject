@@ -119,6 +119,7 @@ const localStyle = StyleSheet.create({
   },
   text: {
     color: colors.mountainIris,
+    fontSize: 16,
     fontFamily: 'Barlow',
     fontWeight: 'bold',
     alignSelf: 'center',
@@ -130,6 +131,7 @@ const localStyle = StyleSheet.create({
     alignSelf: 'center',
   },
   align: {
+    marginTop: 10,
     alignSelf: 'center',
   },
 });
