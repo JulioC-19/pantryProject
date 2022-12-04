@@ -36,7 +36,6 @@ export const ProfileScreen = () => {
 
   const [message, setMessage] = useState('');
   const [errorName, setErrorName] = useState('');
-  const [errorPw, setErrorPw] = useState('');
 
   const body = JSON.stringify({
     email: email,
@@ -110,7 +109,6 @@ export const ProfileScreen = () => {
     } else {
       return validateLastName() && validateName();
     }
-    //return validateLastName() && validateName() && validatePassowrd();
   };
 
   return (
@@ -121,7 +119,6 @@ export const ProfileScreen = () => {
         <Image source={{uri: pic}} style={localStyle.img} />
         <View>
           <Text style={localStyle.errorMessage}>{errorName}</Text>
-          {/* <Text style={localStyle.errorMessage}>{errorPw}</Text> */}
           <TextInput2
             placeholder={fn}
             value={newFirstName}
