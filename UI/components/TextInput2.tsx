@@ -110,7 +110,7 @@ const inputStyle = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'normal',
     flex: 1,
-    color: '#797979',
+    color: 'blackem',
     paddingTop: 0,
     paddingBottom: 0,
   },
@@ -120,6 +120,8 @@ const inputStyle = StyleSheet.create({
     fontSize: 20,
     flex: 1,
     color: 'black',
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   invalidText: {
     fontFamily: 'Barlow',
