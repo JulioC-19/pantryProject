@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {colors} from './styles/colors';
@@ -34,6 +35,7 @@ export const ProfileScreen = () => {
   const md5 = require('md5');
 
   const [message, setMessage] = useState('');
+  const [errorName, setErrorName] = useState('');
 
   const body = JSON.stringify({
     email: email,
@@ -43,32 +45,75 @@ export const ProfileScreen = () => {
   });
 
   const onEdit = async () => {
-    try {
-      await fetch(editProfileAPI, {
-        method: 'POST',
-        body: body,
-        headers: {
-          'Content-Type': 'application/json',
-          // eslint-disable-next-line prettier/prettier
-          'Authorization': tk,
-        },
-      });
-    } catch (error) {
-      console.error('ERROR: edit profile');
-    } finally {
-      setMessage('User profile updated.');
-      await AsyncStorage.setItem('@firstName', newFirstName);
-      await AsyncStorage.setItem('@lastName', newLastName);
-      await AsyncStorage.setItem('@password', newPassword);
+    setMessage('');
+    setErrorName('');
+    const validateInputs = validateAll();
+    if (validateInputs === true) {
+      console.log(body);
+      try {
+        await fetch(editProfileAPI, {
+          method: 'POST',
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            // eslint-disable-next-line prettier/prettier
+            'Authorization': tk,
+          },
+        });
+        console.log(newFirstName + ' ' + newLastName + ' ' + newPassword);
+      } catch (error) {
+        console.error('ERROR: edit profile');
+      } finally {
+        console.log('Successful edit profile');
+        setMessage('User profile updated.');
+        await AsyncStorage.setItem('@firstName', newFirstName);
+        await AsyncStorage.setItem('@lastName', newLastName);
+        await AsyncStorage.setItem('@password', newPassword);
+      }
+    }
+  };
+
+  const validateName = () => {
+    const expression = /^[A-Za-z]{1,20}$/;
+    return expression.test(String(newFirstName).toLowerCase());
+  };
+
+  const validateLastName = () => {
+    const expression = /^[A-Za-z]{1,20}$/;
+    return expression.test(String(newLastName).toLowerCase());
+  };
+
+  const validatePassowrd = () => {
+    const expression = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+    return expression.test(String(newPassword).toLowerCase());
+  };
+
+  const validateAll = () => {
+    if (!validateName() || !validateLastName()) {
+      setErrorName("Names can't contain numbers or special characters");
+    }
+
+    if (newPassword !== password) {
+      console.log('here');
+      if (!validatePassowrd()) {
+        setErrorName(
+          'Password must at least 6 characters, contain at least a number and a special character',
+        );
+      }
+      return validateLastName() && validateName() && validatePassowrd();
+    } else {
+      return validateLastName() && validateName();
     }
   };
 
   return (
     <ScrollView showsHorizontalScrollIndicator={false}>
-      <KeyboardAvoidingView style={localStyle.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={localStyle.container}>
         <Image source={{uri: pic}} style={localStyle.img} />
         <View>
-          <Text style={localStyle.message}>{message}</Text>
+          <Text style={localStyle.errorMessage}>{errorName}</Text>
           <TextInput2
             placeholder={fn}
             value={newFirstName}
@@ -90,6 +135,7 @@ export const ProfileScreen = () => {
           />
 
           <Button2 title="Edit Profile" onPress={onEdit} />
+          <Text style={localStyle.message}>{message}</Text>
 
           <View style={localStyle.align}>
             <TouchableOpacity onPress={async () => logOut()}>
@@ -123,6 +169,13 @@ const localStyle = StyleSheet.create({
   },
   message: {
     color: colors.darkOliveGreen,
+    fontFamily: 'Barlow',
+    fontWeight: 'bold',
+    alignSelf: 'center',
+  },
+  errorMessage: {
+    marginHorizontal: 10,
+    color: colors.mandarinRed,
     fontFamily: 'Barlow',
     fontWeight: 'bold',
     alignSelf: 'center',
