@@ -262,7 +262,7 @@ function App() {
   useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     getAuthToken();
-  });
+  }, []);
 
   return (
     <AuthContext.Provider value={authContext}>
