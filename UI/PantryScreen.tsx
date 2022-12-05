@@ -27,30 +27,29 @@ export const PantryScreen = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
+    const getPantryItem = async () => {
+      try {
+        const response = await fetch(URL, {
+          method: 'POST',
+          body: JSON.stringify({email: email}),
+          headers: {
+            'Content-Type': 'application/json',
+            // eslint-disable-next-line prettier/prettier
+            'Authorization': tk,
+          },
+        });
+        const json = await response.json();
+        const jsonIngredients = json.pantryIngredients;
+        const newIngredients = jsonIngredients.filter((element: any) => {
+          return element !== null && element !== '';
+        });
+        setList(newIngredients);
+      } catch (error) {
+        console.log('getPantry error:: ' + error);
+      }
+    };
     getPantryItem();
-  });
-
-  const getPantryItem = async () => {
-    try {
-      const response = await fetch(URL, {
-        method: 'POST',
-        body: JSON.stringify({email: email}),
-        headers: {
-          'Content-Type': 'application/json',
-          // eslint-disable-next-line prettier/prettier
-          'Authorization': tk,
-        },
-      });
-      const json = await response.json();
-      const jsonIngredients = json.pantryIngredients;
-      const newIngredients = jsonIngredients.filter((element: any) => {
-        return element !== null && element !== '';
-      });
-      setList(newIngredients);
-    } catch (error) {
-      console.log('getPantry error:: ' + error);
-    }
-  };
+  }, [email, tk]);
 
   const addPantryItem = async (item: string) => {
     if (item === '') {
