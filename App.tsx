@@ -38,97 +38,94 @@ function App() {
   const [authState, dispatch] = useReducer(authStateReducer, initAuthState);
   const md5 = require('md5');
 
-  const handleLoginResponse = useCallback(
-    async (response: Response) => {
-      switch (response.status) {
-        case 200:
-          const jsonResponse = await response.json();
-          const token = response.headers.get('Authorization');
-          dispatch({
-            type: AuthActionTypes.RETRIEVE_USER,
-            payload: {
-              email: jsonResponse.email,
-              password: jsonResponse.password,
-              authToken: token,
-              isLoading: false,
-              firstName: authState.firstName,
-              lastName: authState.lastName,
-              profilePicture: authState.profilePicture,
-            },
-          });
-          // Set authentication token to asyncStorage
-          try {
-            await AsyncStorage.setItem('@authToken', token ?? '');
-            await AsyncStorage.setItem('@email', jsonResponse.email);
-            await AsyncStorage.setItem('@password', jsonResponse.password);
-            await AsyncStorage.setItem('@firstName', jsonResponse.firstName);
-            await AsyncStorage.setItem('@lastName', jsonResponse.lastName);
-            await AsyncStorage.setItem(
-              '@profilePicture',
-              jsonResponse.profilePicture,
-            );
-          } catch (e) {
-            // saving error
-            console.log('SAVING ERROR ' + e);
-          }
-          break;
-        case 400:
-          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-          Toast.show({
-            type: 'error',
-            text1: 'Invalid email or password, please try again',
-            visibilityTime: 6000,
-            autoHide: true,
-          });
-          break;
-        case 401:
-          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-          Toast.show({
-            type: 'info',
-            text1: 'Invalid password or user email not verified',
-            visibilityTime: 6000,
-            autoHide: true,
-          });
-          break;
-        case 404:
-          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-          Toast.show({
-            type: 'error',
-            text1: 'Invalid email',
-            visibilityTime: 6000,
-            autoHide: true,
-          });
-          break;
-        case 500:
-          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-          Toast.show({
-            type: 'info',
-            text1: 'Unexpected server error',
-            visibilityTime: 6000,
-            autoHide: true,
-          });
-          break;
-        case 503:
-          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-          Toast.show({
-            type: 'info',
-            text1: 'Failed to connect to server',
-            visibilityTime: 6000,
-            autoHide: true,
-          });
-          break;
-        default:
-          dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
-          Toast.show({
-            type: 'info',
-            text1: 'Unexpected server error',
-            visibilityTime: 6000,
-            autoHide: true,
-          });
-      }
-    },
-    [authState.firstName, authState.lastName, authState.profilePicture],
-  );
+  const handleLoginResponse = useCallback(async (response: Response) => {
+    switch (response.status) {
+      case 200:
+        const jsonResponse = await response.json();
+        const token = response.headers.get('Authorization');
+        dispatch({
+          type: AuthActionTypes.RETRIEVE_USER,
+          payload: {
+            email: jsonResponse.email,
+            password: jsonResponse.password,
+            authToken: token,
+            isLoading: false,
+            firstName: jsonResponse.firstName,
+            lastName: jsonResponse.lastName,
+            profilePicture: jsonResponse.profilePicture,
+          },
+        });
+        // Set authentication token to asyncStorage
+        try {
+          await AsyncStorage.setItem('@authToken', token ?? '');
+          await AsyncStorage.setItem('@email', jsonResponse.email);
+          await AsyncStorage.setItem('@password', jsonResponse.password);
+          await AsyncStorage.setItem('@firstName', jsonResponse.firstName);
+          await AsyncStorage.setItem('@lastName', jsonResponse.lastName);
+          await AsyncStorage.setItem(
+            '@profilePicture',
+            jsonResponse.profilePicture,
+          );
+        } catch (e) {
+          // saving error
+          console.log('SAVING ERROR ' + e);
+        }
+        break;
+      case 400:
+        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid email or password, please try again',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      case 401:
+        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+        Toast.show({
+          type: 'info',
+          text1: 'Invalid password or user email not verified',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      case 404:
+        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid email',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      case 500:
+        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+        Toast.show({
+          type: 'info',
+          text1: 'Unexpected server error',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      case 503:
+        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+        Toast.show({
+          type: 'info',
+          text1: 'Failed to connect to server',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+        break;
+      default:
+        dispatch({type: AuthActionTypes.FAIL, payload: {isLoading: false}});
+        Toast.show({
+          type: 'info',
+          text1: 'Unexpected server error',
+          visibilityTime: 6000,
+          autoHide: true,
+        });
+    }
+  }, []);
 
   const getAuthToken = async () => {
     try {
