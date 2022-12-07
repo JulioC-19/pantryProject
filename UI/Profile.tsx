@@ -31,7 +31,7 @@ export const ProfileScreen = () => {
   const tk: string = token!;
   const [newFirstName, setFirstName] = useState(fn);
   const [newLastName, setLastName] = useState(ln);
-  const [newPassword, setPassword] = useState(pw);
+  const [newPassword, setPassword] = useState('');
   const md5 = require('md5');
 
   const [message, setMessage] = useState('');
@@ -49,7 +49,6 @@ export const ProfileScreen = () => {
     setErrorName('');
     const validateInputs = validateAll();
     if (validateInputs === true) {
-      console.log(body);
       try {
         await fetch(editProfileAPI, {
           method: 'POST',
@@ -60,11 +59,9 @@ export const ProfileScreen = () => {
             'Authorization': tk,
           },
         });
-        console.log(newFirstName + ' ' + newLastName + ' ' + newPassword);
       } catch (error) {
         console.error('ERROR: edit profile');
       } finally {
-        console.log('Successful edit profile');
         setMessage('User profile updated.');
         await AsyncStorage.setItem('@firstName', newFirstName);
         await AsyncStorage.setItem('@lastName', newLastName);
@@ -93,17 +90,12 @@ export const ProfileScreen = () => {
       setErrorName("Names can't contain numbers or special characters");
     }
 
-    if (newPassword !== password) {
-      console.log('here');
-      if (!validatePassowrd()) {
-        setErrorName(
-          'Password must at least 6 characters, contain at least a number and a special character',
-        );
-      }
-      return validateLastName() && validateName() && validatePassowrd();
-    } else {
-      return validateLastName() && validateName();
+    if (!validatePassowrd()) {
+      setErrorName(
+        'Password must at least 6 characters, contain at least a number and a special character',
+      );
     }
+    return validateLastName() && validateName() && validatePassowrd();
   };
 
   return (
@@ -134,7 +126,11 @@ export const ProfileScreen = () => {
             onChangeText={setPassword}
           />
 
-          <Button2 title="Edit Profile" onPress={onEdit} />
+          <Button2
+            title="Edit Profile"
+            onPress={onEdit}
+            // disable={validateAll() === false ? true : false}
+          />
           <Text style={localStyle.message}>{message}</Text>
 
           <View style={localStyle.align}>
