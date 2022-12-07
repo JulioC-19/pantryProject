@@ -43,12 +43,6 @@ export const ProfileScreen = () => {
     lastName: newLastName,
     password: md5(newPassword),
   });
-  const body2 = JSON.stringify({
-    email: email,
-    firstName: newFirstName,
-    lastName: newLastName,
-    password: pw,
-  });
 
   const onEdit = async () => {
     setMessage('');
@@ -56,27 +50,15 @@ export const ProfileScreen = () => {
     const validateInputs = validateAll();
     if (validateInputs === true) {
       try {
-        if (newPassword === '') {
-          await fetch(editProfileAPI, {
-            method: 'POST',
-            body: body2,
-            headers: {
-              'Content-Type': 'application/json',
-              // eslint-disable-next-line prettier/prettier
-              'Authorization': tk,
-            },
-          });
-        } else {
-          await fetch(editProfileAPI, {
-            method: 'POST',
-            body: body,
-            headers: {
-              'Content-Type': 'application/json',
-              // eslint-disable-next-line prettier/prettier
-              'Authorization': tk,
-            },
-          });
-        }
+        await fetch(editProfileAPI, {
+          method: 'POST',
+          body: body,
+          headers: {
+            'Content-Type': 'application/json',
+            // eslint-disable-next-line prettier/prettier
+            'Authorization': tk,
+          },
+        });
       } catch (error) {
         console.error('ERROR: edit profile');
       } finally {
@@ -108,16 +90,12 @@ export const ProfileScreen = () => {
       setErrorName("Names can't contain numbers or special characters");
     }
 
-    if (newPassword === '') {
-      return validateLastName() && validateName();
-    } else {
-      if (!validatePassowrd()) {
-        setErrorName(
-          'Password must at least 6 characters, contain at least a number and a special character',
-        );
-      }
-      return validateLastName() && validateName() && validatePassowrd();
+    if (!validatePassowrd()) {
+      setErrorName(
+        'Password must at least 6 characters, contain at least a number and a special character',
+      );
     }
+    return validateLastName() && validateName() && validatePassowrd();
   };
 
   return (
@@ -148,7 +126,11 @@ export const ProfileScreen = () => {
             onChangeText={setPassword}
           />
 
-          <Button2 title="Edit Profile" onPress={onEdit} />
+          <Button2
+            title="Edit Profile"
+            onPress={onEdit}
+            // disable={validateAll() === false ? true : false}
+          />
           <Text style={localStyle.message}>{message}</Text>
 
           <View style={localStyle.align}>
