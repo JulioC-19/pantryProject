@@ -31,7 +31,7 @@ export const ProfileScreen = () => {
   const tk: string = token!;
   const [newFirstName, setFirstName] = useState(fn);
   const [newLastName, setLastName] = useState(ln);
-  const [newPassword, setPassword] = useState(pw);
+  const [newPassword, setPassword] = useState('');
   const md5 = require('md5');
 
   const [message, setMessage] = useState('');
@@ -43,28 +43,43 @@ export const ProfileScreen = () => {
     lastName: newLastName,
     password: md5(newPassword),
   });
+  const body2 = JSON.stringify({
+    email: email,
+    firstName: newFirstName,
+    lastName: newLastName,
+    password: pw,
+  });
 
   const onEdit = async () => {
     setMessage('');
     setErrorName('');
     const validateInputs = validateAll();
     if (validateInputs === true) {
-      console.log(body);
       try {
-        await fetch(editProfileAPI, {
-          method: 'POST',
-          body: body,
-          headers: {
-            'Content-Type': 'application/json',
-            // eslint-disable-next-line prettier/prettier
-            'Authorization': tk,
-          },
-        });
-        console.log(newFirstName + ' ' + newLastName + ' ' + newPassword);
+        if (newPassword === '') {
+          await fetch(editProfileAPI, {
+            method: 'POST',
+            body: body2,
+            headers: {
+              'Content-Type': 'application/json',
+              // eslint-disable-next-line prettier/prettier
+              'Authorization': tk,
+            },
+          });
+        } else {
+          await fetch(editProfileAPI, {
+            method: 'POST',
+            body: body,
+            headers: {
+              'Content-Type': 'application/json',
+              // eslint-disable-next-line prettier/prettier
+              'Authorization': tk,
+            },
+          });
+        }
       } catch (error) {
         console.error('ERROR: edit profile');
       } finally {
-        console.log('Successful edit profile');
         setMessage('User profile updated.');
         await AsyncStorage.setItem('@firstName', newFirstName);
         await AsyncStorage.setItem('@lastName', newLastName);
@@ -93,16 +108,15 @@ export const ProfileScreen = () => {
       setErrorName("Names can't contain numbers or special characters");
     }
 
-    if (newPassword !== password) {
-      console.log('here');
+    if (newPassword === '') {
+      return validateLastName() && validateName();
+    } else {
       if (!validatePassowrd()) {
         setErrorName(
           'Password must at least 6 characters, contain at least a number and a special character',
         );
       }
       return validateLastName() && validateName() && validatePassowrd();
-    } else {
-      return validateLastName() && validateName();
     }
   };
 
