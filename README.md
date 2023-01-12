@@ -1,5 +1,4 @@
-# Large project mobile
-The start of the large project mobile
+# Pantry Project
 
 ## Demo link:
 No demo yet
